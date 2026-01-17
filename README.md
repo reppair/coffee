@@ -68,13 +68,13 @@ Location (tenant) → BulkStock, PackageStock, Movements, Activity
 User → performs actions, or is customer on sales
 ```
 
-## Documentation
+## Specs & Documentation
 
 | File | Contents |
 |------|----------|
-| [CONCEPT.md](docs/CONCEPT.md) | Full system explanation |
-| [USER_STORIES.md](docs/USER_STORIES.md) | All features with Filament implementation |
-| [DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | Tables, relationships, indexes |
+| [CONCEPT.md](specs/CONCEPT.md) | Full system explanation |
+| [USER_STORIES.md](specs/USER_STORIES.md) | All features with Filament implementation |
+| [DATABASE_SCHEMA.md](specs/DATABASE_SCHEMA.md) | Tables, relationships, indexes |
 
 ## Quick Start
 
