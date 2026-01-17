@@ -80,7 +80,20 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 ---
 
-### US-12: Manage Locations
+### US-12: Manage Package Sizes
+
+> As an admin, I can define available package sizes.
+
+**Resource: PackageSizeResource (Global — admin only)**
+
+- Table: name, weight (grams), sort order, active status
+- Form: name, weight_grams, sort_order, is_active toggle
+- Actions: edit, toggle active, delete (only if unused)
+- Activity tab: shows change history
+
+---
+
+### US-13: Manage Locations
 
 > As an admin, I can add and configure locations.
 
@@ -93,7 +106,7 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 ---
 
-### US-13: Manage Users
+### US-14: Manage Users
 
 > As an admin, I can manage user accounts and roles.
 
@@ -156,7 +169,7 @@ If bulk stock doesn't exist for this product, offer to create it first.
 **Action: "Package" on BulkStockResource row**
 
 Modal fields:
-- Package size (enum: 200g, 500g, 1kg)
+- Package size (dropdown from PackageSize model)
 - Either:
   - Number of packages to create (system calculates grams needed), OR
   - Grams to use (system calculates packages created)
@@ -354,7 +367,7 @@ When price field changes:
 
 Form fields:
 - Product (location auto-set from tenant context)
-- Package size (enum: 200g, 500g, 1kg)
+- Package size (dropdown from PackageSize model)
 - Initial quantity (can be 0)
 - Price
 - Low stock threshold
@@ -496,6 +509,7 @@ Widget: Quick Stats
 |----------|-------|-------|----------|
 | Categories | ✓ | — | — |
 | Products | ✓ | — | — |
+| PackageSizes | ✓ | — | — |
 | Locations | ✓ | — | — |
 | Users | ✓ | — | — |
 | BulkStock | ✓ | ✓ (tenant) | — |
@@ -509,6 +523,7 @@ Widget: Quick Stats
 |----------|-------|--------|
 | Categories | Global | Admin only |
 | Products | Global | Admin only |
+| PackageSizes | Global | Admin only |
 | Locations | Global | Admin only |
 | Users | Global | Admin only |
 | BulkStock | Tenant | Admin + Staff |

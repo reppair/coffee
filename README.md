@@ -36,7 +36,7 @@ Location-based tenancy via Filament. Users switch locations via header dropdown.
 
 | Scope | Resources |
 |-------|-----------|
-| **Global** (admin only) | Categories, Products, Locations, Users |
+| **Global** (admin only) | Categories, Products, PackageSizes, Locations, Users |
 | **Tenant** (per location) | BulkStock, PackageStock, Movements |
 
 ### User Roles
@@ -46,10 +46,6 @@ Location-based tenancy via Filament. Users switch locations via header dropdown.
 | ✓ | — | Admin | Everything |
 | ✗ | ✓ | Staff | Tenant resources only |
 | ✗ | ✗ | Customer | No panel (selectable as buyer) |
-
-### Package Sizes
-
-Fixed enum: `200g`, `500g`, `1kg`
 
 ## Main Actions
 
@@ -65,7 +61,7 @@ Fixed enum: `200g`, `500g`, `1kg`
 
 ```
 Categories → Products → BulkStock (grams)
-                    ↘ PackageStock (units)
+                    ↘ PackageStock (units) ← PackageSizes
 
 Location (tenant) → BulkStock, PackageStock, Movements, Activity
 
@@ -89,3 +85,7 @@ php artisan db:seed
 npm install && npm run build
 php artisan serve
 ```
+
+## License
+
+MIT

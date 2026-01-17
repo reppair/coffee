@@ -26,8 +26,8 @@ This system tracks **two distinct inventories** that are connected:
 │   "We have 15kg of                        "We have 45 bags of       │
 │    Ethiopian beans"                        Ethiopian 200g"          │
 │                                                                     │
-│   Inherits category from                  Fixed sizes: 200g,        │
-│   product (Single Origin,                 500g, 1kg                 │
+│   Inherits category from                  Uses defined package      │
+│   product (Single Origin,                 sizes (200g, 500g, 1kg)   │
 │   Blends, Black Tea, etc.)                                          │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -43,7 +43,7 @@ This system tracks **two distinct inventories** that are connected:
 
 ### Package Inventory (Finished Product)
 - Created by packaging bulk inventory
-- Fixed sizes: 200g, 500g, 1kg (rarely changes)
+- Uses defined package sizes (200g, 500g, 1kg, etc.)
 - Stored as individual units (bags, tins)
 - Ready for retail sale
 - Has a set retail price
@@ -138,15 +138,18 @@ Category: Black Tea
     └── Package forms: 200g, 500g tins (tracked in units)
 ```
 
-### 2. Package Sizes (Fixed)
+### 2. Package Sizes
 
-Three standard sizes, defined as an enum (rarely changes):
+Define what package sizes you offer. Managed by admins.
 
-| Size | Weight |
-|------|--------|
-| 200g | 200 grams |
-| 500g | 500 grams |
-| 1kg | 1000 grams |
+```
+Package Sizes
+├── 200g (200 grams)
+├── 500g (500 grams)
+└── 1kg (1000 grams)
+```
+
+New sizes can be added as needed (e.g., 250g, 100g sample packs).
 
 ### 3. Locations (Shops)
 

@@ -9,6 +9,8 @@
 │                                                                              │
 │   categories ◄───── products                                                 │
 │                                                                              │
+│   package_sizes                                                              │
+│                                                                              │
 │   locations ◄────────► location_user ◄────────► users                       │
 │       │                                                                      │
 │       │ (tenant)                                                             │
@@ -21,6 +23,8 @@
 │       │                   │                                                  │
 │       │                   │                                                  │
 │   package_stocks ──► package_movements                                       │
+│       │                                                                      │
+│       └── belongsTo package_sizes                                            │
 │                                                                              │
 │   All above have location_id for tenant scoping                             │
 │                                                                              │
@@ -74,6 +78,22 @@ Coffee and tea items.
 | type | enum | 'coffee', 'tea' |
 | sku | string | Nullable, unique if set |
 | image | string | Nullable, file path |
+| is_active | boolean | Default: true |
+| created_at | timestamp | |
+| updated_at | timestamp | |
+
+---
+
+### package_sizes
+
+Available packaging options.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | bigint | Primary key |
+| name | string | Display name ("200g", "1kg") |
+| weight_grams | integer | Actual weight (200, 1000) |
+| sort_order | integer | For display ordering, default: 0 |
 | is_active | boolean | Default: true |
 | created_at | timestamp | |
 | updated_at | timestamp | |
@@ -199,16 +219,16 @@ Packaged inventory at each location.
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigint | Primary key |
-| location_id | bigint | Foreign key |
+| location_id | bigint | Foreign key (tenant) |
 | product_id | bigint | Foreign key |
-| package_size | enum | '200g', '500g', '1kg' |
+| package_size_id | bigint | Foreign key |
 | quantity | integer | Current stock in units |
 | price | decimal(10,2) | Retail price per unit |
 | low_stock_threshold | integer | Alert threshold, default: 10 |
 | created_at | timestamp | |
 | updated_at | timestamp | |
 
-Unique constraint: (location_id, product_id, package_size)
+Unique constraint: (location_id, product_id, package_size_id)
 
 ---
 
@@ -287,6 +307,9 @@ Spatie activity log table (auto-created by package). Extended with location_id.
 - hasMany → BulkStock
 - hasMany → PackageStock
 
+### PackageSize
+- hasMany → PackageStock
+
 ### Location (Tenant)
 - hasMany → BulkStock
 - hasMany → PackageStock
@@ -319,6 +342,7 @@ Spatie activity log table (auto-created by package). Extended with location_id.
 ### PackageStock
 - belongsTo → Location
 - belongsTo → Product
+- belongsTo → PackageSize
 - hasMany → PackageMovement
 
 ### PackageMovement
@@ -379,7 +403,8 @@ bulk_stocks: (location_id, product_id) UNIQUE
 
 -- Package stock lookups (tenant-scoped)
 package_stocks: (location_id)
-package_stocks: (location_id, product_id, package_size) UNIQUE
+package_stocks: (package_size_id)
+package_stocks: (location_id, product_id, package_size_id) UNIQUE
 
 -- Movement queries (tenant-scoped)
 bulk_movements: (location_id)
@@ -414,11 +439,6 @@ location_user: (location_id, user_id) UNIQUE
 ### ProductType
 - coffee
 - tea
-
-### PackageSize
-- 200g (200 grams)
-- 500g (500 grams)
-- 1kg (1000 grams)
 
 ### BulkMovementType
 - initial
@@ -455,6 +475,7 @@ Filament multi-tenancy uses Location as the tenant. Tenant-scoped models automat
 **Global tables (no location_id, admin only):**
 - categories
 - products
+- package_sizes
 - locations
 - users
 - location_user
@@ -485,6 +506,7 @@ public function canViewAny(User $user): bool
 // Global resources (admin only)
 CategoryResource::class,
 ProductResource::class,
+PackageSizeResource::class,
 LocationResource::class,
 UserResource::class,
 

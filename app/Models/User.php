@@ -23,6 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
+        'is_staff',
+        'is_active',
     ];
 
     /**
@@ -47,6 +50,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -60,5 +66,45 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function locations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Location::class)->withTimestamps();
+    }
+
+    public function bulkMovements(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(BulkMovement::class, 'user_id');
+    }
+
+    public function packageMovements(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PackageMovement::class, 'user_id');
+    }
+
+    public function customerBulkMovements(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(BulkMovement::class, 'customer_id');
+    }
+
+    public function customerPackageMovements(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PackageMovement::class, 'customer_id');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->is_staff;
+    }
+
+    public function isCustomer(): bool
+    {
+        return ! $this->is_admin && ! $this->is_staff;
     }
 }
