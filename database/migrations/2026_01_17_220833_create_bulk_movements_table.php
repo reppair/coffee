@@ -17,9 +17,9 @@ return new class extends Migration
     {
         Schema::create('bulk_movements', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Location::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Location::class)->constrained()->restrictOnDelete();
             $table->foreignIdFor(BulkStock::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
             $table->foreignIdFor(User::class, 'customer_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('type');
             $table->integer('quantity_grams_change');
@@ -29,7 +29,6 @@ return new class extends Migration
             $table->decimal('sale_price_per_kg', 10, 2)->nullable();
             $table->string('supplier')->nullable();
             $table->foreignIdFor(BulkMovement::class, 'related_movement_id')->nullable()->constrained('bulk_movements')->nullOnDelete();
-            $table->unsignedBigInteger('package_movement_id')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

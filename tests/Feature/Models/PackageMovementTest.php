@@ -147,6 +147,33 @@ it('can create initial movement', function () {
         ->and($movement->quantity_before)->toBe(0);
 });
 
+it('can create transfer out movement', function () {
+    $movement = PackageMovement::factory()->transferOut()->create();
+
+    expect($movement->type)->toBe(PackageMovementType::TransferOut)
+        ->and($movement->quantity_change)->toBeLessThan(0);
+});
+
+it('can create transfer in movement', function () {
+    $movement = PackageMovement::factory()->transferIn()->create();
+
+    expect($movement->type)->toBe(PackageMovementType::TransferIn)
+        ->and($movement->quantity_change)->toBeGreaterThan(0);
+});
+
+it('can create adjustment movement', function () {
+    $movement = PackageMovement::factory()->adjustment()->create();
+
+    expect($movement->type)->toBe(PackageMovementType::Adjustment);
+});
+
+it('can create damaged movement', function () {
+    $movement = PackageMovement::factory()->damaged()->create();
+
+    expect($movement->type)->toBe(PackageMovementType::Damaged)
+        ->and($movement->quantity_change)->toBeLessThan(0);
+});
+
 it('logs activity when created', function () {
     $movement = PackageMovement::factory()->create();
 

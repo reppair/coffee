@@ -35,12 +35,28 @@ it('can update a location', function () {
     expect($location->fresh()->name)->toBe('Updated Name');
 });
 
-it('can delete a location', function () {
+it('can delete a location without related records', function () {
     $location = Location::factory()->create();
 
     $location->delete();
 
     expect(Location::find($location->id))->toBeNull();
+});
+
+it('cannot delete a location with bulk stocks', function () {
+    $location = Location::factory()->create();
+    BulkStock::factory()->for($location, 'location')->create();
+
+    expect(fn () => $location->delete())
+        ->toThrow(\Illuminate\Database\QueryException::class);
+});
+
+it('cannot delete a location with package stocks', function () {
+    $location = Location::factory()->create();
+    PackageStock::factory()->for($location, 'location')->create();
+
+    expect(fn () => $location->delete())
+        ->toThrow(\Illuminate\Database\QueryException::class);
 });
 
 it('can retrieve a location', function () {

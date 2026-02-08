@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BulkMovement;
 use App\Models\Location;
 use App\Models\PackageMovement;
 use App\Models\PackageStock;
@@ -17,9 +18,9 @@ return new class extends Migration
     {
         Schema::create('package_movements', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Location::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Location::class)->constrained()->restrictOnDelete();
             $table->foreignIdFor(PackageStock::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
             $table->foreignIdFor(User::class, 'customer_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('type');
             $table->integer('quantity_change');
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->integer('quantity_after');
             $table->decimal('sale_price', 10, 2)->nullable();
             $table->foreignIdFor(PackageMovement::class, 'related_movement_id')->nullable()->constrained('package_movements')->nullOnDelete();
-            $table->unsignedBigInteger('bulk_movement_id')->nullable();
+            $table->foreignIdFor(BulkMovement::class)->nullable()->constrained()->nullOnDelete();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

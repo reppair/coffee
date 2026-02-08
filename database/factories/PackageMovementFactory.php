@@ -66,4 +66,36 @@ class PackageMovementFactory extends Factory
             'quantity_after' => $attributes['quantity_change'],
         ]);
     }
+
+    public function transferOut(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => PackageMovementType::TransferOut,
+            'quantity_change' => -fake()->numberBetween(1, 10),
+        ]);
+    }
+
+    public function transferIn(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => PackageMovementType::TransferIn,
+            'quantity_change' => fake()->numberBetween(1, 10),
+        ]);
+    }
+
+    public function adjustment(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => PackageMovementType::Adjustment,
+            'quantity_change' => fake()->numberBetween(-5, 5),
+        ]);
+    }
+
+    public function damaged(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => PackageMovementType::Damaged,
+            'quantity_change' => -fake()->numberBetween(1, 5),
+        ]);
+    }
 }

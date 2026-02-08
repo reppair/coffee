@@ -104,9 +104,9 @@ it('belongs to related movement', function () {
         ->and($movement->relatedMovement->id)->toBe($relatedMovement->id);
 });
 
-it('belongs to package movement', function () {
-    $packageMovement = PackageMovement::factory()->create();
-    $movement = BulkMovement::factory()->create(['package_movement_id' => $packageMovement->id]);
+it('has one package movement', function () {
+    $movement = BulkMovement::factory()->create();
+    $packageMovement = PackageMovement::factory()->create(['bulk_movement_id' => $movement->id]);
 
     expect($movement->packageMovement)->toBeInstanceOf(PackageMovement::class)
         ->and($movement->packageMovement->id)->toBe($packageMovement->id);
@@ -159,6 +159,33 @@ it('can create initial movement', function () {
 
     expect($movement->type)->toBe(BulkMovementType::Initial)
         ->and($movement->quantity_grams_before)->toBe(0);
+});
+
+it('can create transfer out movement', function () {
+    $movement = BulkMovement::factory()->transferOut()->create();
+
+    expect($movement->type)->toBe(BulkMovementType::TransferOut)
+        ->and($movement->quantity_grams_change)->toBeLessThan(0);
+});
+
+it('can create transfer in movement', function () {
+    $movement = BulkMovement::factory()->transferIn()->create();
+
+    expect($movement->type)->toBe(BulkMovementType::TransferIn)
+        ->and($movement->quantity_grams_change)->toBeGreaterThan(0);
+});
+
+it('can create adjustment movement', function () {
+    $movement = BulkMovement::factory()->adjustment()->create();
+
+    expect($movement->type)->toBe(BulkMovementType::Adjustment);
+});
+
+it('can create damaged movement', function () {
+    $movement = BulkMovement::factory()->damaged()->create();
+
+    expect($movement->type)->toBe(BulkMovementType::Damaged)
+        ->and($movement->quantity_grams_change)->toBeLessThan(0);
 });
 
 it('logs activity when created', function () {

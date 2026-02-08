@@ -36,7 +36,6 @@ class BulkMovementFactory extends Factory
             'sale_price_per_kg' => fake()->optional()->randomFloat(2, 20, 100),
             'supplier' => fake()->optional()->company(),
             'related_movement_id' => null,
-            'package_movement_id' => null,
             'notes' => fake()->optional()->sentence(),
         ];
     }
@@ -76,6 +75,38 @@ class BulkMovementFactory extends Factory
             'quantity_grams_before' => 0,
             'quantity_grams_change' => fake()->numberBetween(10000, 50000),
             'quantity_grams_after' => $attributes['quantity_grams_change'],
+        ]);
+    }
+
+    public function transferOut(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => BulkMovementType::TransferOut,
+            'quantity_grams_change' => -fake()->numberBetween(1000, 5000),
+        ]);
+    }
+
+    public function transferIn(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => BulkMovementType::TransferIn,
+            'quantity_grams_change' => fake()->numberBetween(1000, 5000),
+        ]);
+    }
+
+    public function adjustment(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => BulkMovementType::Adjustment,
+            'quantity_grams_change' => fake()->numberBetween(-2000, 2000),
+        ]);
+    }
+
+    public function damaged(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => BulkMovementType::Damaged,
+            'quantity_grams_change' => -fake()->numberBetween(100, 2000),
         ]);
     }
 }

@@ -74,7 +74,6 @@ Coffee and tea items.
 | category_id | bigint | Foreign key, nullable |
 | name | string | Required |
 | slug | string | Unique, URL-friendly |
-| description | text | Nullable |
 | type | enum | 'coffee', 'tea' |
 | sku | string | Nullable, unique if set |
 | image | string | Nullable, file path |
@@ -147,7 +146,6 @@ Pivot table: which users work at which locations.
 
 | Column | Type | Notes |
 |--------|------|-------|
-| id | bigint | Primary key |
 | location_id | bigint | Foreign key |
 | user_id | bigint | Foreign key |
 | created_at | timestamp | |
@@ -195,7 +193,6 @@ All changes to bulk inventory. Tenant-scoped via location_id.
 | sale_price_per_kg | decimal(10,2) | Nullable, for sales |
 | supplier | string | Nullable, for purchases |
 | related_movement_id | bigint | Nullable, FK to self, for transfers |
-| package_movement_id | bigint | Nullable, FK, for packaging link |
 | notes | text | Nullable |
 | created_at | timestamp | |
 | updated_at | timestamp | |
@@ -337,7 +334,7 @@ Spatie activity log table (auto-created by package). Extended with location_id.
 - belongsTo → User (performer)
 - belongsTo → User (customer, nullable)
 - belongsTo → BulkMovement (related_movement_id, for transfers)
-- hasOne → PackageMovement (package_movement_id, for packaging)
+- hasOne → PackageMovement (via bulk_movement_id on package_movements)
 
 ### PackageStock
 - belongsTo → Location
@@ -368,9 +365,9 @@ When packaging happens, two movements are created and linked:
 bulk_movements                          package_movements
 ┌────────────────────────┐              ┌────────────────────────┐
 │ id: 45                 │              │ id: 78                 │
-│ type: packaging        │◄────────────►│ type: packaged         │
+│ type: packaging        │◄─────────────│ type: packaged         │
 │ quantity: −2000g       │              │ quantity: +10          │
-│ package_movement_id: 78│              │ bulk_movement_id: 45   │
+│                        │              │ bulk_movement_id: 45   │
 └────────────────────────┘              └────────────────────────┘
 ```
 
