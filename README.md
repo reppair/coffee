@@ -72,9 +72,12 @@ User → performs actions, or is customer on sales
 
 | File | Contents |
 |------|----------|
+| [CHANGELOG.md](CHANGELOG.md) | What's new, changed, and fixed |
 | [CONCEPT.md](specs/CONCEPT.md) | Full system explanation |
 | [USER_STORIES.md](specs/USER_STORIES.md) | All features with Filament implementation |
+| [TASKS.md](specs/TASKS.md) | Implementation task breakdown |
 | [DATABASE_SCHEMA.md](specs/DATABASE_SCHEMA.md) | Tables, relationships, indexes |
+| [DECISIONS.md](specs/DECISIONS.md) | Technical decision log |
 
 ## Quick Start
 
