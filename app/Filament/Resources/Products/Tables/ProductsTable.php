@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Tables;
 
 use App\Enums\ProductType;
 use App\Filament\Resources\Categories\CategoryResource;
+use App\Models\Product;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
@@ -26,7 +27,9 @@ class ProductsTable
                     ->sortable(),
                 TextColumn::make('category.name')
                     ->sortable()
-                    ->url(fn ($record) => $record->category_id ? CategoryResource::getUrl('view', ['record' => $record->category_id]) : null),
+                    ->url(fn (Product $record): ?string => $record->category_id
+                        ? CategoryResource::getUrl('view', ['record' => $record->category_id])
+                        : null),
                 TextColumn::make('type')
                     ->sortable(),
                 IconColumn::make('is_active')

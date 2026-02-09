@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ProductType;
+use App\Filament\Resources\Categories\CategoryResource;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProductActivities;
@@ -18,6 +19,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
+use Filament\Tables\Columns\TextColumn;
 
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
@@ -378,41 +380,17 @@ it('category column has url configured', function () {
     $category = Category::factory()->create();
     $product = Product::factory()->for($category)->create();
 
-    $component = livewire(ListProducts::class);
-
-    $table = $component->instance()->getTable();
-    $categoryColumn = collect($table->getColumns())->first(fn ($col) => $col->getName() === 'category.name');
-
-    expect($categoryColumn)->not->toBeNull();
-
-    $reflection = new \ReflectionClass($categoryColumn);
-    $urlProperty = $reflection->getProperty('url');
-    $urlProperty->setAccessible(true);
-    $urlClosure = $urlProperty->getValue($categoryColumn);
-
-    expect($urlClosure)->not->toBeNull()
-        ->and($urlClosure)->toBeInstanceOf(\Closure::class);
-
-    $generatedUrl = $urlClosure($product);
-    $expectedUrl = \App\Filament\Resources\Categories\CategoryResource::getUrl('view', ['record' => $category->id]);
-
-    expect($generatedUrl)->toBe($expectedUrl);
+    livewire(ListProducts::class)
+        ->assertTableColumnExists('category.name', function (TextColumn $column) use ($category): bool {
+            return $column->getUrl() === CategoryResource::getUrl('view', ['record' => $category->id]);
+        }, $product);
 });
 
 it('category column returns null url when product has no category', function () {
     $product = Product::factory()->create(['category_id' => null]);
 
-    $component = livewire(ListProducts::class);
-
-    $table = $component->instance()->getTable();
-    $categoryColumn = collect($table->getColumns())->first(fn ($col) => $col->getName() === 'category.name');
-
-    $reflection = new \ReflectionClass($categoryColumn);
-    $urlProperty = $reflection->getProperty('url');
-    $urlProperty->setAccessible(true);
-    $urlClosure = $urlProperty->getValue($categoryColumn);
-
-    $generatedUrl = $urlClosure($product);
-
-    expect($generatedUrl)->toBeNull();
+    livewire(ListProducts::class)
+        ->assertTableColumnExists('category.name', function (TextColumn $column): bool {
+            return $column->getUrl() === null;
+        }, $product);
 });

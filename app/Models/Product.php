@@ -19,19 +19,7 @@ class Product extends Model implements Sortable
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, SoftDeletes, SortableTrait, TracksActivity;
 
-    protected static function booted(): void
-    {
-        static::creating(function (Product $product) {
-            $product->slug ??= Str::slug($product->name);
-        });
-
-        static::updating(function (Product $product) {
-            if ($product->isDirty('name')) {
-                $product->slug = Str::slug($product->name);
-            }
-        });
-    }
-
+    /** @var list<string> */
     protected $fillable = [
         'category_id',
         'name',
@@ -49,6 +37,20 @@ class Product extends Model implements Sortable
         'sort_when_creating' => true,
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product) {
+            $product->slug ??= Str::slug($product->name);
+        });
+
+        static::updating(function (Product $product) {
+            if ($product->isDirty('name')) {
+                $product->slug = Str::slug($product->name);
+            }
+        });
+    }
+
+    /** @return array<string, string> */
     protected function casts(): array
     {
         return [

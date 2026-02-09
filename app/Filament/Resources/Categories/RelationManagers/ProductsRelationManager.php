@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Categories\RelationManagers;
 
 use App\Filament\Resources\Products\ProductResource;
+use App\Models\Product;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -13,11 +13,6 @@ use Filament\Tables\Table;
 class ProductsRelationManager extends RelationManager
 {
     protected static string $relationship = 'products';
-
-    public function form(Schema $schema): Schema
-    {
-        return $schema->components([]);
-    }
 
     public function table(Table $table): Table
     {
@@ -34,13 +29,10 @@ class ProductsRelationManager extends RelationManager
             ])
             ->defaultSort('category_sort_order')
             ->reorderable('category_sort_order')
-            ->filters([])
-            ->headerActions([])
             ->recordActions([
                 ViewAction::make()
-                    ->url(fn ($record) => ProductResource::getUrl('view', ['record' => $record->id])),
-            ])
-            ->toolbarActions([]);
+                    ->url(fn (Product $record): string => ProductResource::getUrl('view', ['record' => $record->id])),
+            ]);
     }
 
     public function isReadOnly(): bool
