@@ -5,6 +5,9 @@ All notable changes to the Coffee & Tea Inventory System.
 ## [Unreleased]
 
 ### Added
+- Admin panel multi-tenancy with Location as tenant — users switch between locations
+- Panel access control — only admin and staff users can access the admin panel
+- Tenant scoping — admins see all locations, staff see only their assigned locations
 - Complete data model for managing bulk (raw beans/leaves) and packaged (retail bags) inventory
 - 8 core models: Categories, Products, Package Sizes, Locations, Bulk Stock, Package Stock, Bulk Movements, Package Movements
 - User roles system with admin, staff, and customer flags

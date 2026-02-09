@@ -28,11 +28,11 @@ Sets up Filament multi-tenancy, access control, and location switching before an
 
 **Stories:** US-01 (Switch Location)
 
-- [ ] **1.1** Configure `AdminPanelProvider` with `Location` as tenant (`->tenant(Location::class)`)
-- [ ] **1.2** Add panel access gate — only `is_admin` or `is_staff` users can access
-- [ ] **1.3** Scope tenant list — admins see all locations, staff see assigned locations only
-- [ ] **1.4** Create `CHANGELOG.md`
-- [ ] **1.5** Tests: panel access (admin ✓, staff ✓, customer ✗), tenant switching, location scoping
+- [x] **1.1** Configure `AdminPanelProvider` with `Location` as tenant (`->tenant(Location::class)`)
+- [x] **1.2** Add panel access gate — only `is_admin` or `is_staff` users can access
+- [x] **1.3** Scope tenant list — admins see all locations, staff see assigned locations only
+- [x] **1.4** Create `CHANGELOG.md`
+- [x] **1.5** Tests: panel access (admin ✓, staff ✓, customer ✗), tenant switching, location scoping
 
 ---
 

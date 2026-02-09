@@ -2,15 +2,20 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasTenants;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasTenants
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -77,6 +82,29 @@ class User extends Authenticatable
     public function customerPackageMovements(): HasMany
     {
         return $this->hasMany(PackageMovement::class, 'customer_id');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin() || $this->isStaff();
+    }
+
+    public function getTenants(Panel $panel): Collection
+    {
+        if ($this->isAdmin()) {
+            return Location::all();
+        }
+
+        return $this->locations;
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return $this->locations()->whereKey($tenant)->exists();
     }
 
     public function isAdmin(): bool
