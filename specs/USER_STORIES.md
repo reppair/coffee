@@ -43,11 +43,12 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 > As a user, I can see the change history of any record.
 
-**Activity Tab on Each Resource (via filament-activity-log)**
+**Activity Page on Each Resource (via filament-activity-log)**
 
-- Shows all changes with old → new values
+- Shows all changes with old → new values in a table
 - Shows who made each change
 - Shows timestamp
+- Restore action disabled — activities are audit-only
 
 ---
 
@@ -59,10 +60,11 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 **Resource: CategoryResource (Global — admin only)**
 
-- Table: name, product count, active status
+- Table: name, active status
+- Table actions: view, edit, delete
 - Form: name, description, active toggle
-- Actions: edit, toggle active, delete (only if empty)
-- Activity tab: shows change history
+- View page actions: activities, edit, delete (disabled with policy tooltip when products exist)
+- Activity tab: shows change history (restore disabled)
 
 ---
 
@@ -73,10 +75,11 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: ProductResource (Global — admin only)**
 
 - Table: image, name, category, type (coffee/tea), active
-- Form: name, description, category, type, SKU, image
-- Filters: by category, by type, active only
-- Actions: edit, toggle active, delete (only if no stock)
-- Activity tab: shows change history
+- Table actions: view, edit, delete
+- Table filters: by category, by type, active only
+- Form: name, description, category, type, SKU, image, active toggle
+- View page actions: activities, edit, delete (disabled with policy tooltip when stock exists)
+- Activity tab: shows change history (restore disabled)
 
 ---
 
@@ -87,9 +90,10 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: PackageSizeResource (Global — admin only)**
 
 - Table: name, weight (grams), sort order, active status
+- Table actions: view, edit, delete
 - Form: name, weight_grams, sort_order, is_active toggle
-- Actions: edit, toggle active, delete (only if unused)
-- Activity tab: shows change history
+- View page actions: activities, edit, delete (disabled with policy tooltip when used by stock)
+- Activity tab: shows change history (restore disabled)
 
 ---
 
@@ -100,9 +104,10 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: LocationResource (Global — admin only)**
 
 - Table: name, address, active status
+- Table actions: view, edit, delete
 - Form: name, address, phone, active toggle
-- Actions: edit, delete (only if no stock)
-- Activity tab: shows change history
+- View page actions: activities, edit, delete (disabled with policy tooltip when stock exists)
+- Activity tab: shows change history (restore disabled)
 
 ---
 
@@ -113,9 +118,10 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: UserResource (Global — admin only)**
 
 - Table: name, email, role badge (Admin/Staff/Customer), assigned locations
+- Table actions: view, edit
 - Form: name, email, password, is_admin (toggle), is_staff (toggle), location assignments
-- Actions: edit, deactivate
-- Activity tab: shows change history
+- View page actions: activities, edit
+- Activity tab: shows change history (restore disabled)
 
 **Role Logic:**
 - `is_admin = true` → Admin (full access)

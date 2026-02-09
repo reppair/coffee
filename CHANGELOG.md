@@ -5,6 +5,7 @@ All notable changes to the Coffee & Tea Inventory System.
 ## [Unreleased]
 
 ### Added
+- Category management resource for admins — create, edit, and delete product categories
 - Admin panel multi-tenancy with Location as tenant — users switch between locations
 - Panel access control — only admin and staff users can access the admin panel
 - Tenant scoping — admins see all locations, staff see only their assigned locations

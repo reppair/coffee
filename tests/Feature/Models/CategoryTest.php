@@ -75,6 +75,29 @@ it('can create inactive category', function () {
     expect($category->is_active)->toBeFalse();
 });
 
+it('auto-generates slug from name on create', function () {
+    $category = Category::create(['name' => 'Ethiopian Single Origin']);
+
+    expect($category->slug)->toBe('ethiopian-single-origin');
+});
+
+it('updates slug when name changes', function () {
+    $category = Category::factory()->create(['name' => 'Original Name']);
+
+    $category->update(['name' => 'Updated Name']);
+
+    expect($category->fresh()->slug)->toBe('updated-name');
+});
+
+it('does not overwrite explicit slug on create', function () {
+    $category = Category::create([
+        'name' => 'Test Category',
+        'slug' => 'custom-slug',
+    ]);
+
+    expect($category->slug)->toBe('custom-slug');
+});
+
 it('logs activity when created', function () {
     $category = Category::create([
         'name' => 'Activity Test',

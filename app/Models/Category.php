@@ -6,6 +6,7 @@ use App\Models\Concerns\TracksActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -18,6 +19,19 @@ class Category extends Model
         'description',
         'is_active',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Category $category) {
+            $category->slug ??= Str::slug($category->name);
+        });
+
+        static::updating(function (Category $category) {
+            if ($category->isDirty('name')) {
+                $category->slug = Str::slug($category->name);
+            }
+        });
+    }
 
     protected function casts(): array
     {

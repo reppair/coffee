@@ -1,0 +1,11 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/pxlrbt/filament-activity-log/resources/css/styles.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+.text-danger-notice {
+    font-size: 0.875rem;
+    text-align: center;
+    color: var(--color-danger-600);
+}

@@ -8,3 +8,6 @@
 | 004 | 2026-02-08 | Enum columns stored as `string` with PHP enum casts | Avoids MySQL enum limitations; Laravel recommended approach |
 | 005 | 2026-02-08 | Single FK for packaging link: `bulk_movement_id` on `package_movements` only | Bidirectional FKs were redundant and created circular migration dependency |
 | 006 | 2026-02-09 | No `location_id` on `activity_log` table | Redundant — location is derivable from subject model relationships; avoids denormalization overhead |
+| 007 | 2026-02-09 | No product count column on CategoryResource table | Unnecessary — delete guard works regardless; simplifies the table |
+| 008 | 2026-02-09 | Disable restore action on activity log pages | Prevents accidental data rollback; activities are for audit purposes only |
+| 009 | 2026-02-09 | Delete guard pattern: policy `Response::deny()` with `authorizationTooltip()` | Server-side enforcement via policy; Filament disables button and shows deny message as tooltip. Applied to all global resources with delete guards |

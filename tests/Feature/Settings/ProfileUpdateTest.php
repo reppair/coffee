@@ -1,8 +1,10 @@
 <?php
 
+use App\Livewire\Settings\DeleteUserForm;
 use App\Livewire\Settings\Profile;
 use App\Models\User;
-use Livewire\Livewire;
+
+use function Pest\Livewire\livewire;
 
 test('profile page is displayed', function () {
     $this->actingAs(User::factory()->create())
@@ -15,7 +17,7 @@ test('profile information can be updated', function () {
 
     $this->actingAs($user);
 
-    Livewire::test(Profile::class)
+    livewire(Profile::class)
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->call('updateProfileInformation')
@@ -32,7 +34,7 @@ test('email verification status is unchanged when email address is unchanged', f
 
     $this->actingAs($user);
 
-    Livewire::test(Profile::class)
+    livewire(Profile::class)
         ->set('name', 'Test User')
         ->set('email', $user->email)
         ->call('updateProfileInformation')
@@ -46,7 +48,7 @@ test('user can delete their account', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('settings.delete-user-form')
+    livewire(DeleteUserForm::class)
         ->set('password', 'password')
         ->call('deleteUser')
         ->assertHasNoErrors()
@@ -61,7 +63,7 @@ test('correct password must be provided to delete account', function () {
 
     $this->actingAs($user);
 
-    Livewire::test('settings.delete-user-form')
+    livewire(DeleteUserForm::class)
         ->set('password', 'wrong-password')
         ->call('deleteUser')
         ->assertHasErrors(['password']);

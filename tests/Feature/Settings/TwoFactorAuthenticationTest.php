@@ -1,8 +1,11 @@
 <?php
 
+use App\Livewire\Settings\TwoFactor;
 use App\Models\User;
 use Laravel\Fortify\Features;
-use Livewire\Livewire;
+
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Livewire\livewire;
 
 beforeEach(function () {
     if (! Features::canManageTwoFactorAuthentication()) {
@@ -27,24 +30,18 @@ test('two factor settings page can be rendered', function () {
 });
 
 test('two factor settings page requires password confirmation when enabled', function () {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)
-        ->get(route('two-factor.show'));
-
-    $response->assertRedirect(route('password.confirm'));
+    $this->actingAs(User::factory()->create())
+        ->get(route('two-factor.show'))
+        ->assertRedirect(route('password.confirm'));
 });
 
 test('two factor settings page returns forbidden response when two factor is disabled', function () {
     config(['fortify.features' => []]);
 
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)
+    $this->actingAs(User::factory()->create())
         ->withSession(['auth.password_confirmed_at' => time()])
-        ->get(route('two-factor.show'));
-
-    $response->assertForbidden();
+        ->get(route('two-factor.show'))
+        ->assertForbidden();
 });
 
 test('two factor authentication disabled when confirmation abandoned between requests', function () {
@@ -58,11 +55,10 @@ test('two factor authentication disabled when confirmation abandoned between req
 
     $this->actingAs($user);
 
-    $component = Livewire::test('settings.two-factor');
+    livewire(TwoFactor::class)
+        ->assertSet('twoFactorEnabled', false);
 
-    $component->assertSet('twoFactorEnabled', false);
-
-    $this->assertDatabaseHas('users', [
+    assertDatabaseHas(User::class, [
         'id' => $user->id,
         'two_factor_secret' => null,
         'two_factor_recovery_codes' => null,
