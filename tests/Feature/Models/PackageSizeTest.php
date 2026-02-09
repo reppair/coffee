@@ -14,9 +14,9 @@ it('can create a package size', function () {
     ]);
 
     expect($size)->toBeInstanceOf(PackageSize::class)
-        ->and($size->name)->toBe('250g')
-        ->and($size->weight_grams)->toBe(250)
-        ->and($size->is_active)->toBeTrue();
+        ->name->toBe('250g')
+        ->weight_grams->toBe(250)
+        ->is_active->toBeTrue();
 
     assertDatabaseHas('package_sizes', [
         'name' => '250g',
@@ -29,8 +29,11 @@ it('can update a package size', function () {
 
     $size->update(['name' => '150g', 'weight_grams' => 150]);
 
-    expect($size->fresh()->name)->toBe('150g')
-        ->and($size->fresh()->weight_grams)->toBe(150);
+    $fresh = $size->fresh();
+
+    expect($fresh)
+        ->name->toBe('150g')
+        ->weight_grams->toBe(150);
 });
 
 it('can delete a package size', function () {
@@ -52,17 +55,16 @@ it('can retrieve a package size', function () {
 
 it('has package stocks relationship', function () {
     $size = PackageSize::factory()->create();
-    $stocks = PackageStock::factory()->count(3)->for($size, 'packageSize')->create();
+    PackageStock::factory()->count(3)->for($size, 'packageSize')->create();
 
     expect($size->packageStocks)->toHaveCount(3)
-        ->and($size->packageStocks->first())->toBeInstanceOf(PackageStock::class);
+        ->each->toBeInstanceOf(PackageStock::class);
 });
 
 it('casts is_active to boolean', function () {
     $size = PackageSize::factory()->create(['is_active' => true]);
 
-    expect($size->is_active)->toBeTrue()
-        ->and($size->is_active)->toBeBool();
+    expect($size->is_active)->toBeTrue();
 });
 
 it('can create inactive package size', function () {

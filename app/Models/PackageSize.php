@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\TracksActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class PackageSize extends Model
 {
     /** @use HasFactory<\Database\Factories\PackageSizeFactory> */
-    use HasFactory;
-
-    use LogsActivity;
+    use HasFactory, TracksActivity;
 
     protected $fillable = [
         'name',
@@ -32,12 +29,5 @@ class PackageSize extends Model
     public function packageStocks(): HasMany
     {
         return $this->hasMany(PackageStock::class);
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty();
     }
 }

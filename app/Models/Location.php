@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\TracksActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Location extends Model
 {
     /** @use HasFactory<\Database\Factories\LocationFactory> */
-    use HasFactory;
-
-    use LogsActivity;
+    use HasFactory, TracksActivity;
 
     protected $fillable = [
         'name',
@@ -53,12 +50,5 @@ class Location extends Model
     public function packageMovements(): HasMany
     {
         return $this->hasMany(PackageMovement::class);
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty();
     }
 }

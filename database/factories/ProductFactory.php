@@ -5,17 +5,13 @@ namespace Database\Factories;
 use App\Enums\ProductType;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
  */
 class ProductFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $name = fake()->words(2, true);
@@ -23,10 +19,9 @@ class ProductFactory extends Factory
         return [
             'category_id' => Category::factory(),
             'name' => $name,
-            'slug' => \Illuminate\Support\Str::slug($name),
+            'slug' => Str::slug($name),
             'type' => fake()->randomElement(ProductType::cases()),
             'sku' => fake()->optional()->regexify('[A-Z]{3}[0-9]{4}'),
-            'image' => null,
             'is_active' => true,
         ];
     }

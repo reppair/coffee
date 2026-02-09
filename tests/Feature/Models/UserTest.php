@@ -18,8 +18,8 @@ it('can create a user', function () {
     ]);
 
     expect($user)->toBeInstanceOf(User::class)
-        ->and($user->name)->toBe('Test User')
-        ->and($user->email)->toBe('test@example.com');
+        ->name->toBe('Test User')
+        ->email->toBe('test@example.com');
 
     assertDatabaseHas('users', [
         'name' => 'Test User',
@@ -58,7 +58,7 @@ it('belongs to many locations', function () {
     $user->locations()->attach($locations);
 
     expect($user->locations)->toHaveCount(3)
-        ->and($user->locations->first())->toBeInstanceOf(Location::class);
+        ->each->toBeInstanceOf(Location::class);
 });
 
 it('has bulk movements relationship', function () {
@@ -66,7 +66,7 @@ it('has bulk movements relationship', function () {
     BulkMovement::factory()->count(2)->for($user, 'user')->create();
 
     expect($user->bulkMovements)->toHaveCount(2)
-        ->and($user->bulkMovements->first())->toBeInstanceOf(BulkMovement::class);
+        ->each->toBeInstanceOf(BulkMovement::class);
 });
 
 it('has package movements relationship', function () {
@@ -74,65 +74,65 @@ it('has package movements relationship', function () {
     PackageMovement::factory()->count(2)->for($user, 'user')->create();
 
     expect($user->packageMovements)->toHaveCount(2)
-        ->and($user->packageMovements->first())->toBeInstanceOf(PackageMovement::class);
+        ->each->toBeInstanceOf(PackageMovement::class);
 });
 
 it('has customer bulk movements relationship', function () {
-    $customer = User::factory()->customer()->create();
+    $customer = User::factory()->create();
     BulkMovement::factory()->count(2)->create(['customer_id' => $customer->id]);
 
     expect($customer->customerBulkMovements)->toHaveCount(2)
-        ->and($customer->customerBulkMovements->first())->toBeInstanceOf(BulkMovement::class);
+        ->each->toBeInstanceOf(BulkMovement::class);
 });
 
 it('has customer package movements relationship', function () {
-    $customer = User::factory()->customer()->create();
+    $customer = User::factory()->create();
     PackageMovement::factory()->count(2)->create(['customer_id' => $customer->id]);
 
     expect($customer->customerPackageMovements)->toHaveCount(2)
-        ->and($customer->customerPackageMovements->first())->toBeInstanceOf(PackageMovement::class);
+        ->each->toBeInstanceOf(PackageMovement::class);
 });
 
 it('casts is_admin to boolean', function () {
     $user = User::factory()->admin()->create();
 
-    expect($user->is_admin)->toBeTrue()
-        ->and($user->is_admin)->toBeBool();
+    expect($user->is_admin)->toBeTrue();
 });
 
 it('casts is_staff to boolean', function () {
     $user = User::factory()->staff()->create();
 
-    expect($user->is_staff)->toBeTrue()
-        ->and($user->is_staff)->toBeBool();
+    expect($user->is_staff)->toBeTrue();
 });
 
 it('casts is_active to boolean', function () {
     $user = User::factory()->create(['is_active' => true]);
 
-    expect($user->is_active)->toBeTrue()
-        ->and($user->is_active)->toBeBool();
+    expect($user->is_active)->toBeTrue();
 });
 
 it('can create admin user', function () {
     $user = User::factory()->admin()->create();
 
-    expect($user->is_admin)->toBeTrue()
-        ->and($user->is_staff)->toBeFalse();
+    expect($user)
+        ->is_admin->toBeTrue()
+        ->is_staff->toBeFalse();
 });
 
 it('can create staff user', function () {
     $user = User::factory()->staff()->create();
 
-    expect($user->is_admin)->toBeFalse()
-        ->and($user->is_staff)->toBeTrue();
+    expect($user)
+        ->is_admin->toBeFalse()
+        ->is_staff->toBeTrue();
 });
 
 it('can create customer user', function () {
-    $user = User::factory()->customer()->create();
+    $user = User::factory()->create();
 
-    expect($user->is_admin)->toBeFalse()
-        ->and($user->is_staff)->toBeFalse();
+    expect($user)
+        ->is_admin->toBeFalse()
+        ->is_staff->toBeFalse();
 });
 
 it('can create inactive user', function () {
@@ -144,7 +144,7 @@ it('can create inactive user', function () {
 it('identifies admin correctly', function () {
     $admin = User::factory()->admin()->create();
     $staff = User::factory()->staff()->create();
-    $customer = User::factory()->customer()->create();
+    $customer = User::factory()->create();
 
     expect($admin->isAdmin())->toBeTrue()
         ->and($staff->isAdmin())->toBeFalse()
@@ -154,7 +154,7 @@ it('identifies admin correctly', function () {
 it('identifies staff correctly', function () {
     $admin = User::factory()->admin()->create();
     $staff = User::factory()->staff()->create();
-    $customer = User::factory()->customer()->create();
+    $customer = User::factory()->create();
 
     expect($staff->isStaff())->toBeTrue()
         ->and($admin->isStaff())->toBeFalse()
@@ -164,7 +164,7 @@ it('identifies staff correctly', function () {
 it('identifies customer correctly', function () {
     $admin = User::factory()->admin()->create();
     $staff = User::factory()->staff()->create();
-    $customer = User::factory()->customer()->create();
+    $customer = User::factory()->create();
 
     expect($customer->isCustomer())->toBeTrue()
         ->and($admin->isCustomer())->toBeFalse()

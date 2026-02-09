@@ -13,11 +13,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class BulkMovementFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $quantityChange = fake()->numberBetween(1000, 10000);
@@ -27,7 +22,6 @@ class BulkMovementFactory extends Factory
             'location_id' => Location::factory(),
             'bulk_stock_id' => BulkStock::factory(),
             'user_id' => User::factory(),
-            'customer_id' => null,
             'type' => fake()->randomElement(BulkMovementType::cases()),
             'quantity_grams_change' => $quantityChange,
             'quantity_grams_before' => $quantityBefore,
@@ -35,7 +29,6 @@ class BulkMovementFactory extends Factory
             'cost_per_kg' => fake()->optional()->randomFloat(2, 10, 50),
             'sale_price_per_kg' => fake()->optional()->randomFloat(2, 20, 100),
             'supplier' => fake()->optional()->company(),
-            'related_movement_id' => null,
             'notes' => fake()->optional()->sentence(),
         ];
     }
@@ -70,12 +63,16 @@ class BulkMovementFactory extends Factory
 
     public function initial(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'type' => BulkMovementType::Initial,
-            'quantity_grams_before' => 0,
-            'quantity_grams_change' => fake()->numberBetween(10000, 50000),
-            'quantity_grams_after' => $attributes['quantity_grams_change'],
-        ]);
+        return $this->state(function (array $attributes) {
+            $quantityChange = fake()->numberBetween(10000, 50000);
+
+            return [
+                'type' => BulkMovementType::Initial,
+                'quantity_grams_before' => 0,
+                'quantity_grams_change' => $quantityChange,
+                'quantity_grams_after' => $quantityChange,
+            ];
+        });
     }
 
     public function transferOut(): static

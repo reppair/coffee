@@ -14,9 +14,9 @@ it('can create a category', function () {
     ]);
 
     expect($category)->toBeInstanceOf(Category::class)
-        ->and($category->name)->toBe('Test Category')
-        ->and($category->slug)->toBe('test-category')
-        ->and($category->is_active)->toBeTrue();
+        ->name->toBe('Test Category')
+        ->slug->toBe('test-category')
+        ->is_active->toBeTrue();
 
     assertDatabaseHas('categories', [
         'name' => 'Test Category',
@@ -54,20 +54,19 @@ it('has products relationship', function () {
     $products = Product::factory()->count(3)->for($category)->create();
 
     expect($category->products)->toHaveCount(3)
-        ->and($category->products->first())->toBeInstanceOf(Product::class)
-        ->and($category->products->pluck('id')->toArray())->toEqual($products->pluck('id')->toArray());
+        ->each->toBeInstanceOf(Product::class);
+
+    expect($category->products->pluck('id')->toArray())->toEqual($products->pluck('id')->toArray());
 });
 
 it('casts is_active to boolean', function () {
     $category = Category::factory()->create(['is_active' => true]);
 
-    expect($category->is_active)->toBeTrue()
-        ->and($category->is_active)->toBeBool();
+    expect($category->is_active)->toBeTrue();
 
     $category->update(['is_active' => false]);
 
-    expect($category->fresh()->is_active)->toBeFalse()
-        ->and($category->fresh()->is_active)->toBeBool();
+    expect($category->fresh()->is_active)->toBeFalse();
 });
 
 it('can create inactive category', function () {

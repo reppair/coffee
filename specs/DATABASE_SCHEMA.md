@@ -35,7 +35,7 @@
 │   activity_log (spatie/laravel-activitylog)                                 │
 │   - Tracks all model changes (dirty attributes)                             │
 │   - Tracks manual action logs (purchases, sales, etc.)                      │
-│   - Has location_id for tenant-scoped activity feed                         │
+│   - Tracks changes via polymorphic subject                                 │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -264,12 +264,11 @@ All changes to package inventory. Tenant-scoped via location_id.
 
 ### activity_log
 
-Spatie activity log table (auto-created by package). Extended with location_id.
+Spatie activity log table (auto-created by package).
 
 | Column | Type | Notes |
 |--------|------|-------|
 | id | bigint | Primary key |
-| location_id | bigint | Nullable, FK (for tenant-scoped feed) |
 | log_name | string | Log channel name |
 | description | string | Human-readable description |
 | subject_type | string | Model class being logged |
@@ -312,7 +311,6 @@ Spatie activity log table (auto-created by package). Extended with location_id.
 - hasMany → PackageStock
 - hasMany → BulkMovement
 - hasMany → PackageMovement
-- hasMany → Activity
 - belongsToMany → User (pivot: location_user)
 
 ### User
@@ -351,7 +349,6 @@ Spatie activity log table (auto-created by package). Extended with location_id.
 - belongsTo → BulkMovement (bulk_movement_id, for packaging)
 
 ### Activity (Spatie)
-- belongsTo → Location (nullable)
 - morphTo → subject (any model)
 - belongsTo → User (causer)
 
@@ -418,9 +415,7 @@ package_movements: (user_id)
 package_movements: (customer_id)
 package_movements: (type)
 
--- Activity log (tenant-scoped feed)
-activity_log: (location_id)
-activity_log: (location_id, created_at)
+-- Activity log
 activity_log: (subject_type, subject_id)
 activity_log: (causer_type, causer_id)
 
@@ -467,7 +462,6 @@ Filament multi-tenancy uses Location as the tenant. Tenant-scoped models automat
 - package_stocks
 - bulk_movements
 - package_movements
-- activity_log
 
 **Global tables (no location_id, admin only):**
 - categories
@@ -518,19 +512,16 @@ PackageMovementResource::class,
 
 ## Activity Logging
 
-Uses `spatie/laravel-activitylog` with custom location_id column.
+Uses `spatie/laravel-activitylog`. Location is derived from subject model relationships.
 
 **Automatic logging (model changes):**
 ```php
-// In models, use LogsActivity trait
-use Spatie\Activitylog\Traits\LogsActivity;
+// In models, use TracksActivity trait
+use App\Models\Concerns\TracksActivity;
 
 class BulkStock extends Model
 {
-    use LogsActivity;
-    
-    protected static $logOnlyDirty = true;
-    protected static $logAttributes = ['*'];
+    use TracksActivity;
 }
 ```
 
@@ -546,9 +537,6 @@ activity()
         'customer_id' => $customer?->id,
         'customer_name' => $customer?->name,
     ])
-    ->tap(function($activity) use ($location) {
-        $activity->location_id = $location->id;
-    })
     ->log('Sold 5 × Ethiopian 200g @ €8.50 to Local Café');
 ```
 

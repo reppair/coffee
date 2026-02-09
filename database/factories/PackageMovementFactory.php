@@ -13,11 +13,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PackageMovementFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $quantityChange = fake()->numberBetween(1, 20);
@@ -27,14 +22,11 @@ class PackageMovementFactory extends Factory
             'location_id' => Location::factory(),
             'package_stock_id' => PackageStock::factory(),
             'user_id' => User::factory(),
-            'customer_id' => null,
             'type' => fake()->randomElement(PackageMovementType::cases()),
             'quantity_change' => $quantityChange,
             'quantity_before' => $quantityBefore,
             'quantity_after' => $quantityBefore + $quantityChange,
             'sale_price' => fake()->optional()->randomFloat(2, 5, 50),
-            'related_movement_id' => null,
-            'bulk_movement_id' => null,
             'notes' => fake()->optional()->sentence(),
         ];
     }
@@ -59,12 +51,16 @@ class PackageMovementFactory extends Factory
 
     public function initial(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'type' => PackageMovementType::Initial,
-            'quantity_before' => 0,
-            'quantity_change' => fake()->numberBetween(10, 50),
-            'quantity_after' => $attributes['quantity_change'],
-        ]);
+        return $this->state(function (array $attributes) {
+            $quantityChange = fake()->numberBetween(10, 50);
+
+            return [
+                'type' => PackageMovementType::Initial,
+                'quantity_before' => 0,
+                'quantity_change' => $quantityChange,
+                'quantity_after' => $quantityChange,
+            ];
+        });
     }
 
     public function transferOut(): static

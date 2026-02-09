@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Location;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,10 +15,8 @@ class CreateActivityLogTable extends Migration
             $table->nullableMorphs('subject', 'subject');
             $table->nullableMorphs('causer', 'causer');
             $table->json('properties')->nullable();
-            $table->foreignIdFor(Location::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
             $table->index('log_name');
-            $table->index('location_id');
         });
     }
 

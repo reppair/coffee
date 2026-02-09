@@ -23,8 +23,8 @@ it('can create package stock', function () {
     ]);
 
     expect($stock)->toBeInstanceOf(PackageStock::class)
-        ->and($stock->quantity)->toBe(50)
-        ->and($stock->price)->toBe('12.99');
+        ->quantity->toBe(50)
+        ->price->toBe('12.99');
 
     assertDatabaseHas('package_stocks', [
         'location_id' => $location->id,
@@ -63,8 +63,8 @@ it('belongs to location', function () {
     $stock = PackageStock::factory()->for($location, 'location')->create();
 
     expect($stock->location)->toBeInstanceOf(Location::class)
-        ->and($stock->location->id)->toBe($location->id)
-        ->and($stock->location->name)->toBe('Test Location');
+        ->id->toBe($location->id)
+        ->name->toBe('Test Location');
 });
 
 it('belongs to product', function () {
@@ -72,8 +72,8 @@ it('belongs to product', function () {
     $stock = PackageStock::factory()->for($product, 'product')->create();
 
     expect($stock->product)->toBeInstanceOf(Product::class)
-        ->and($stock->product->id)->toBe($product->id)
-        ->and($stock->product->name)->toBe('Test Product');
+        ->id->toBe($product->id)
+        ->name->toBe('Test Product');
 });
 
 it('belongs to package size', function () {
@@ -81,16 +81,16 @@ it('belongs to package size', function () {
     $stock = PackageStock::factory()->for($size, 'packageSize')->create();
 
     expect($stock->packageSize)->toBeInstanceOf(PackageSize::class)
-        ->and($stock->packageSize->id)->toBe($size->id)
-        ->and($stock->packageSize->name)->toBe('500g');
+        ->id->toBe($size->id)
+        ->name->toBe('500g');
 });
 
 it('has package movements relationship', function () {
     $stock = PackageStock::factory()->create();
-    $movements = PackageMovement::factory()->count(3)->for($stock, 'packageStock')->create();
+    PackageMovement::factory()->count(3)->for($stock, 'packageStock')->create();
 
     expect($stock->packageMovements)->toHaveCount(3)
-        ->and($stock->packageMovements->first())->toBeInstanceOf(PackageMovement::class);
+        ->each->toBeInstanceOf(PackageMovement::class);
 });
 
 it('isLowStock returns true when stock is below threshold', function () {
@@ -142,13 +142,4 @@ it('logs activity when created', function () {
     $stock = PackageStock::factory()->create();
 
     expect($stock->activities()->count())->toBeGreaterThan(0);
-});
-
-it('sets location_id on activity log', function () {
-    $location = Location::factory()->create();
-    $stock = PackageStock::factory()->for($location, 'location')->create();
-
-    $activity = $stock->activities()->first();
-
-    expect($activity->location_id)->toBe($location->id);
 });

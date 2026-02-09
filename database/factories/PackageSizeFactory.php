@@ -9,11 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PackageSizeFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $weightGrams = fake()->randomElement([200, 500, 1000]);

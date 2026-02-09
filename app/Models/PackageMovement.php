@@ -3,18 +3,15 @@
 namespace App\Models;
 
 use App\Enums\PackageMovementType;
+use App\Models\Concerns\TracksActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class PackageMovement extends Model
 {
     /** @use HasFactory<\Database\Factories\PackageMovementFactory> */
-    use HasFactory;
-
-    use LogsActivity;
+    use HasFactory, TracksActivity;
 
     protected $fillable = [
         'location_id',
@@ -51,7 +48,7 @@ class PackageMovement extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function customer(): BelongsTo
@@ -61,23 +58,11 @@ class PackageMovement extends Model
 
     public function relatedMovement(): BelongsTo
     {
-        return $this->belongsTo(PackageMovement::class, 'related_movement_id');
+        return $this->belongsTo(self::class, 'related_movement_id');
     }
 
     public function bulkMovement(): BelongsTo
     {
         return $this->belongsTo(BulkMovement::class);
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty();
-    }
-
-    public function tapActivity($activity, string $eventName): void
-    {
-        $activity->location_id = $this->location_id;
     }
 }

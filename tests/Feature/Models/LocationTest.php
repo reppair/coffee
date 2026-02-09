@@ -18,8 +18,8 @@ it('can create a location', function () {
     ]);
 
     expect($location)->toBeInstanceOf(Location::class)
-        ->and($location->name)->toBe('Test Location')
-        ->and($location->is_active)->toBeTrue();
+        ->name->toBe('Test Location')
+        ->is_active->toBeTrue();
 
     assertDatabaseHas('locations', [
         'name' => 'Test Location',
@@ -74,46 +74,45 @@ it('belongs to many users', function () {
     $location->users()->attach($users);
 
     expect($location->users)->toHaveCount(3)
-        ->and($location->users->first())->toBeInstanceOf(User::class);
+        ->each->toBeInstanceOf(User::class);
 });
 
 it('has bulk stocks relationship', function () {
     $location = Location::factory()->create();
-    $bulkStocks = BulkStock::factory()->count(2)->for($location, 'location')->create();
+    BulkStock::factory()->count(2)->for($location, 'location')->create();
 
     expect($location->bulkStocks)->toHaveCount(2)
-        ->and($location->bulkStocks->first())->toBeInstanceOf(BulkStock::class);
+        ->each->toBeInstanceOf(BulkStock::class);
 });
 
 it('has package stocks relationship', function () {
     $location = Location::factory()->create();
-    $packageStocks = PackageStock::factory()->count(3)->for($location, 'location')->create();
+    PackageStock::factory()->count(3)->for($location, 'location')->create();
 
     expect($location->packageStocks)->toHaveCount(3)
-        ->and($location->packageStocks->first())->toBeInstanceOf(PackageStock::class);
+        ->each->toBeInstanceOf(PackageStock::class);
 });
 
 it('has bulk movements relationship', function () {
     $location = Location::factory()->create();
-    $movements = BulkMovement::factory()->count(2)->for($location, 'location')->create();
+    BulkMovement::factory()->count(2)->for($location, 'location')->create();
 
     expect($location->bulkMovements)->toHaveCount(2)
-        ->and($location->bulkMovements->first())->toBeInstanceOf(BulkMovement::class);
+        ->each->toBeInstanceOf(BulkMovement::class);
 });
 
 it('has package movements relationship', function () {
     $location = Location::factory()->create();
-    $movements = PackageMovement::factory()->count(2)->for($location, 'location')->create();
+    PackageMovement::factory()->count(2)->for($location, 'location')->create();
 
     expect($location->packageMovements)->toHaveCount(2)
-        ->and($location->packageMovements->first())->toBeInstanceOf(PackageMovement::class);
+        ->each->toBeInstanceOf(PackageMovement::class);
 });
 
 it('casts is_active to boolean', function () {
     $location = Location::factory()->create(['is_active' => true]);
 
-    expect($location->is_active)->toBeTrue()
-        ->and($location->is_active)->toBeBool();
+    expect($location->is_active)->toBeTrue();
 });
 
 it('can create inactive location', function () {

@@ -3,19 +3,16 @@
 namespace App\Models;
 
 use App\Enums\ProductType;
+use App\Models\Concerns\TracksActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory;
-
-    use LogsActivity;
+    use HasFactory, TracksActivity;
 
     protected $fillable = [
         'category_id',
@@ -48,12 +45,5 @@ class Product extends Model
     public function packageStocks(): HasMany
     {
         return $this->hasMany(PackageStock::class);
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty();
     }
 }

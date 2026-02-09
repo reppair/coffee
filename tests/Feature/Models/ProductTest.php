@@ -21,9 +21,9 @@ it('can create a product', function () {
     ]);
 
     expect($product)->toBeInstanceOf(Product::class)
-        ->and($product->name)->toBe('Test Product')
-        ->and($product->type)->toBe(ProductType::Coffee)
-        ->and($product->is_active)->toBeTrue();
+        ->name->toBe('Test Product')
+        ->type->toBe(ProductType::Coffee)
+        ->is_active->toBeTrue();
 
     assertDatabaseHas('products', [
         'name' => 'Test Product',
@@ -61,31 +61,31 @@ it('belongs to category', function () {
     $product = Product::factory()->for($category)->create();
 
     expect($product->category)->toBeInstanceOf(Category::class)
-        ->and($product->category->id)->toBe($category->id)
-        ->and($product->category->name)->toBe('Test Category');
+        ->id->toBe($category->id)
+        ->name->toBe('Test Category');
 });
 
 it('has bulk stocks relationship', function () {
     $product = Product::factory()->create();
-    $bulkStocks = BulkStock::factory()->count(2)->for($product, 'product')->create();
+    BulkStock::factory()->count(2)->for($product, 'product')->create();
 
     expect($product->bulkStocks)->toHaveCount(2)
-        ->and($product->bulkStocks->first())->toBeInstanceOf(BulkStock::class);
+        ->each->toBeInstanceOf(BulkStock::class);
 });
 
 it('has package stocks relationship', function () {
     $product = Product::factory()->create();
-    $packageStocks = PackageStock::factory()->count(3)->for($product, 'product')->create();
+    PackageStock::factory()->count(3)->for($product, 'product')->create();
 
     expect($product->packageStocks)->toHaveCount(3)
-        ->and($product->packageStocks->first())->toBeInstanceOf(PackageStock::class);
+        ->each->toBeInstanceOf(PackageStock::class);
 });
 
 it('casts type to ProductType enum', function () {
     $product = Product::factory()->coffee()->create();
 
     expect($product->type)->toBeInstanceOf(ProductType::class)
-        ->and($product->type)->toBe(ProductType::Coffee);
+        ->toBe(ProductType::Coffee);
 
     $product->update(['type' => ProductType::Tea]);
 
@@ -95,8 +95,7 @@ it('casts type to ProductType enum', function () {
 it('casts is_active to boolean', function () {
     $product = Product::factory()->create(['is_active' => true]);
 
-    expect($product->is_active)->toBeTrue()
-        ->and($product->is_active)->toBeBool();
+    expect($product->is_active)->toBeTrue();
 });
 
 it('can create coffee product', function () {

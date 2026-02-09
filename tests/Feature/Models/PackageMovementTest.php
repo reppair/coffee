@@ -26,8 +26,8 @@ it('can create package movement', function () {
     ]);
 
     expect($movement)->toBeInstanceOf(PackageMovement::class)
-        ->and($movement->quantity_change)->toBe(-5)
-        ->and($movement->type)->toBe(PackageMovementType::Sale);
+        ->quantity_change->toBe(-5)
+        ->type->toBe(PackageMovementType::Sale);
 
     assertDatabaseHas('package_movements', [
         'location_id' => $location->id,
@@ -65,8 +65,8 @@ it('belongs to location', function () {
     $movement = PackageMovement::factory()->for($location, 'location')->create();
 
     expect($movement->location)->toBeInstanceOf(Location::class)
-        ->and($movement->location->id)->toBe($location->id)
-        ->and($movement->location->name)->toBe('Test Location');
+        ->id->toBe($location->id)
+        ->name->toBe('Test Location');
 });
 
 it('belongs to package stock', function () {
@@ -74,7 +74,7 @@ it('belongs to package stock', function () {
     $movement = PackageMovement::factory()->for($stock, 'packageStock')->create();
 
     expect($movement->packageStock)->toBeInstanceOf(PackageStock::class)
-        ->and($movement->packageStock->id)->toBe($stock->id);
+        ->id->toBe($stock->id);
 });
 
 it('belongs to user', function () {
@@ -82,8 +82,8 @@ it('belongs to user', function () {
     $movement = PackageMovement::factory()->for($user, 'user')->create();
 
     expect($movement->user)->toBeInstanceOf(User::class)
-        ->and($movement->user->id)->toBe($user->id)
-        ->and($movement->user->name)->toBe('Test User');
+        ->id->toBe($user->id)
+        ->name->toBe('Test User');
 });
 
 it('belongs to customer', function () {
@@ -91,8 +91,8 @@ it('belongs to customer', function () {
     $movement = PackageMovement::factory()->create(['customer_id' => $customer->id]);
 
     expect($movement->customer)->toBeInstanceOf(User::class)
-        ->and($movement->customer->id)->toBe($customer->id)
-        ->and($movement->customer->name)->toBe('Customer');
+        ->id->toBe($customer->id)
+        ->name->toBe('Customer');
 });
 
 it('belongs to related movement', function () {
@@ -100,7 +100,7 @@ it('belongs to related movement', function () {
     $movement = PackageMovement::factory()->create(['related_movement_id' => $relatedMovement->id]);
 
     expect($movement->relatedMovement)->toBeInstanceOf(PackageMovement::class)
-        ->and($movement->relatedMovement->id)->toBe($relatedMovement->id);
+        ->id->toBe($relatedMovement->id);
 });
 
 it('belongs to bulk movement', function () {
@@ -108,14 +108,14 @@ it('belongs to bulk movement', function () {
     $movement = PackageMovement::factory()->create(['bulk_movement_id' => $bulkMovement->id]);
 
     expect($movement->bulkMovement)->toBeInstanceOf(BulkMovement::class)
-        ->and($movement->bulkMovement->id)->toBe($bulkMovement->id);
+        ->id->toBe($bulkMovement->id);
 });
 
 it('casts type to PackageMovementType enum', function () {
     $movement = PackageMovement::factory()->sale()->create();
 
     expect($movement->type)->toBeInstanceOf(PackageMovementType::class)
-        ->and($movement->type)->toBe(PackageMovementType::Sale);
+        ->toBe(PackageMovementType::Sale);
 });
 
 it('casts sale_price to decimal', function () {
@@ -127,38 +127,43 @@ it('casts sale_price to decimal', function () {
 it('can create sale movement', function () {
     $movement = PackageMovement::factory()->sale()->create();
 
-    expect($movement->type)->toBe(PackageMovementType::Sale)
-        ->and($movement->quantity_change)->toBeLessThan(0)
-        ->and($movement->sale_price)->not->toBeNull()
-        ->and($movement->customer_id)->not->toBeNull();
+    expect($movement)
+        ->type->toBe(PackageMovementType::Sale)
+        ->quantity_change->toBeLessThan(0)
+        ->sale_price->not->toBeNull()
+        ->customer_id->not->toBeNull();
 });
 
 it('can create packaged movement', function () {
     $movement = PackageMovement::factory()->packaged()->create();
 
-    expect($movement->type)->toBe(PackageMovementType::Packaged)
-        ->and($movement->quantity_change)->toBeGreaterThan(0);
+    expect($movement)
+        ->type->toBe(PackageMovementType::Packaged)
+        ->quantity_change->toBeGreaterThan(0);
 });
 
 it('can create initial movement', function () {
     $movement = PackageMovement::factory()->initial()->create();
 
-    expect($movement->type)->toBe(PackageMovementType::Initial)
-        ->and($movement->quantity_before)->toBe(0);
+    expect($movement)
+        ->type->toBe(PackageMovementType::Initial)
+        ->quantity_before->toBe(0);
 });
 
 it('can create transfer out movement', function () {
     $movement = PackageMovement::factory()->transferOut()->create();
 
-    expect($movement->type)->toBe(PackageMovementType::TransferOut)
-        ->and($movement->quantity_change)->toBeLessThan(0);
+    expect($movement)
+        ->type->toBe(PackageMovementType::TransferOut)
+        ->quantity_change->toBeLessThan(0);
 });
 
 it('can create transfer in movement', function () {
     $movement = PackageMovement::factory()->transferIn()->create();
 
-    expect($movement->type)->toBe(PackageMovementType::TransferIn)
-        ->and($movement->quantity_change)->toBeGreaterThan(0);
+    expect($movement)
+        ->type->toBe(PackageMovementType::TransferIn)
+        ->quantity_change->toBeGreaterThan(0);
 });
 
 it('can create adjustment movement', function () {
@@ -170,21 +175,13 @@ it('can create adjustment movement', function () {
 it('can create damaged movement', function () {
     $movement = PackageMovement::factory()->damaged()->create();
 
-    expect($movement->type)->toBe(PackageMovementType::Damaged)
-        ->and($movement->quantity_change)->toBeLessThan(0);
+    expect($movement)
+        ->type->toBe(PackageMovementType::Damaged)
+        ->quantity_change->toBeLessThan(0);
 });
 
 it('logs activity when created', function () {
     $movement = PackageMovement::factory()->create();
 
     expect($movement->activities()->count())->toBeGreaterThan(0);
-});
-
-it('sets location_id on activity log', function () {
-    $location = Location::factory()->create();
-    $movement = PackageMovement::factory()->for($location, 'location')->create();
-
-    $activity = $movement->activities()->first();
-
-    expect($activity->location_id)->toBe($location->id);
 });

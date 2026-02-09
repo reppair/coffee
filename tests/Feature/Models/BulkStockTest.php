@@ -20,8 +20,8 @@ it('can create bulk stock', function () {
     ]);
 
     expect($stock)->toBeInstanceOf(BulkStock::class)
-        ->and($stock->quantity_grams)->toBe(10000)
-        ->and($stock->default_sale_price_per_kg)->toBe('50.00');
+        ->quantity_grams->toBe(10000)
+        ->default_sale_price_per_kg->toBe('50.00');
 
     assertDatabaseHas('bulk_stocks', [
         'location_id' => $location->id,
@@ -60,8 +60,8 @@ it('belongs to location', function () {
     $stock = BulkStock::factory()->for($location, 'location')->create();
 
     expect($stock->location)->toBeInstanceOf(Location::class)
-        ->and($stock->location->id)->toBe($location->id)
-        ->and($stock->location->name)->toBe('Test Location');
+        ->id->toBe($location->id)
+        ->name->toBe('Test Location');
 });
 
 it('belongs to product', function () {
@@ -69,16 +69,16 @@ it('belongs to product', function () {
     $stock = BulkStock::factory()->for($product, 'product')->create();
 
     expect($stock->product)->toBeInstanceOf(Product::class)
-        ->and($stock->product->id)->toBe($product->id)
-        ->and($stock->product->name)->toBe('Test Product');
+        ->id->toBe($product->id)
+        ->name->toBe('Test Product');
 });
 
 it('has bulk movements relationship', function () {
     $stock = BulkStock::factory()->create();
-    $movements = BulkMovement::factory()->count(3)->for($stock, 'bulkStock')->create();
+    BulkMovement::factory()->count(3)->for($stock, 'bulkStock')->create();
 
     expect($stock->bulkMovements)->toHaveCount(3)
-        ->and($stock->bulkMovements->first())->toBeInstanceOf(BulkMovement::class);
+        ->each->toBeInstanceOf(BulkMovement::class);
 });
 
 it('isLowStock returns true when stock is below threshold', function () {
@@ -130,13 +130,4 @@ it('logs activity when created', function () {
     $stock = BulkStock::factory()->create();
 
     expect($stock->activities()->count())->toBeGreaterThan(0);
-});
-
-it('sets location_id on activity log', function () {
-    $location = Location::factory()->create();
-    $stock = BulkStock::factory()->for($location, 'location')->create();
-
-    $activity = $stock->activities()->first();
-
-    expect($activity->location_id)->toBe($location->id);
 });

@@ -27,8 +27,8 @@ it('can create bulk movement', function () {
     ]);
 
     expect($movement)->toBeInstanceOf(BulkMovement::class)
-        ->and($movement->quantity_grams_change)->toBe(5000)
-        ->and($movement->type)->toBe(BulkMovementType::Purchase);
+        ->quantity_grams_change->toBe(5000)
+        ->type->toBe(BulkMovementType::Purchase);
 
     assertDatabaseHas('bulk_movements', [
         'location_id' => $location->id,
@@ -66,8 +66,8 @@ it('belongs to location', function () {
     $movement = BulkMovement::factory()->for($location, 'location')->create();
 
     expect($movement->location)->toBeInstanceOf(Location::class)
-        ->and($movement->location->id)->toBe($location->id)
-        ->and($movement->location->name)->toBe('Test Location');
+        ->id->toBe($location->id)
+        ->name->toBe('Test Location');
 });
 
 it('belongs to bulk stock', function () {
@@ -75,7 +75,7 @@ it('belongs to bulk stock', function () {
     $movement = BulkMovement::factory()->for($stock, 'bulkStock')->create();
 
     expect($movement->bulkStock)->toBeInstanceOf(BulkStock::class)
-        ->and($movement->bulkStock->id)->toBe($stock->id);
+        ->id->toBe($stock->id);
 });
 
 it('belongs to user', function () {
@@ -83,8 +83,8 @@ it('belongs to user', function () {
     $movement = BulkMovement::factory()->for($user, 'user')->create();
 
     expect($movement->user)->toBeInstanceOf(User::class)
-        ->and($movement->user->id)->toBe($user->id)
-        ->and($movement->user->name)->toBe('Test User');
+        ->id->toBe($user->id)
+        ->name->toBe('Test User');
 });
 
 it('belongs to customer', function () {
@@ -92,8 +92,8 @@ it('belongs to customer', function () {
     $movement = BulkMovement::factory()->create(['customer_id' => $customer->id]);
 
     expect($movement->customer)->toBeInstanceOf(User::class)
-        ->and($movement->customer->id)->toBe($customer->id)
-        ->and($movement->customer->name)->toBe('Customer');
+        ->id->toBe($customer->id)
+        ->name->toBe('Customer');
 });
 
 it('belongs to related movement', function () {
@@ -101,7 +101,7 @@ it('belongs to related movement', function () {
     $movement = BulkMovement::factory()->create(['related_movement_id' => $relatedMovement->id]);
 
     expect($movement->relatedMovement)->toBeInstanceOf(BulkMovement::class)
-        ->and($movement->relatedMovement->id)->toBe($relatedMovement->id);
+        ->id->toBe($relatedMovement->id);
 });
 
 it('has one package movement', function () {
@@ -109,14 +109,14 @@ it('has one package movement', function () {
     $packageMovement = PackageMovement::factory()->create(['bulk_movement_id' => $movement->id]);
 
     expect($movement->packageMovement)->toBeInstanceOf(PackageMovement::class)
-        ->and($movement->packageMovement->id)->toBe($packageMovement->id);
+        ->id->toBe($packageMovement->id);
 });
 
 it('casts type to BulkMovementType enum', function () {
     $movement = BulkMovement::factory()->purchase()->create();
 
     expect($movement->type)->toBeInstanceOf(BulkMovementType::class)
-        ->and($movement->type)->toBe(BulkMovementType::Purchase);
+        ->toBe(BulkMovementType::Purchase);
 });
 
 it('casts cost_per_kg to decimal', function () {
@@ -134,45 +134,51 @@ it('casts sale_price_per_kg to decimal', function () {
 it('can create purchase movement', function () {
     $movement = BulkMovement::factory()->purchase()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::Purchase)
-        ->and($movement->cost_per_kg)->not->toBeNull()
-        ->and($movement->supplier)->not->toBeNull();
+    expect($movement)
+        ->type->toBe(BulkMovementType::Purchase)
+        ->cost_per_kg->not->toBeNull()
+        ->supplier->not->toBeNull();
 });
 
 it('can create sale movement', function () {
     $movement = BulkMovement::factory()->sale()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::Sale)
-        ->and($movement->quantity_grams_change)->toBeLessThan(0)
-        ->and($movement->customer_id)->not->toBeNull();
+    expect($movement)
+        ->type->toBe(BulkMovementType::Sale)
+        ->quantity_grams_change->toBeLessThan(0)
+        ->customer_id->not->toBeNull();
 });
 
 it('can create packaging movement', function () {
     $movement = BulkMovement::factory()->packaging()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::Packaging)
-        ->and($movement->quantity_grams_change)->toBeLessThan(0);
+    expect($movement)
+        ->type->toBe(BulkMovementType::Packaging)
+        ->quantity_grams_change->toBeLessThan(0);
 });
 
 it('can create initial movement', function () {
     $movement = BulkMovement::factory()->initial()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::Initial)
-        ->and($movement->quantity_grams_before)->toBe(0);
+    expect($movement)
+        ->type->toBe(BulkMovementType::Initial)
+        ->quantity_grams_before->toBe(0);
 });
 
 it('can create transfer out movement', function () {
     $movement = BulkMovement::factory()->transferOut()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::TransferOut)
-        ->and($movement->quantity_grams_change)->toBeLessThan(0);
+    expect($movement)
+        ->type->toBe(BulkMovementType::TransferOut)
+        ->quantity_grams_change->toBeLessThan(0);
 });
 
 it('can create transfer in movement', function () {
     $movement = BulkMovement::factory()->transferIn()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::TransferIn)
-        ->and($movement->quantity_grams_change)->toBeGreaterThan(0);
+    expect($movement)
+        ->type->toBe(BulkMovementType::TransferIn)
+        ->quantity_grams_change->toBeGreaterThan(0);
 });
 
 it('can create adjustment movement', function () {
@@ -184,21 +190,13 @@ it('can create adjustment movement', function () {
 it('can create damaged movement', function () {
     $movement = BulkMovement::factory()->damaged()->create();
 
-    expect($movement->type)->toBe(BulkMovementType::Damaged)
-        ->and($movement->quantity_grams_change)->toBeLessThan(0);
+    expect($movement)
+        ->type->toBe(BulkMovementType::Damaged)
+        ->quantity_grams_change->toBeLessThan(0);
 });
 
 it('logs activity when created', function () {
     $movement = BulkMovement::factory()->create();
 
     expect($movement->activities()->count())->toBeGreaterThan(0);
-});
-
-it('sets location_id on activity log', function () {
-    $location = Location::factory()->create();
-    $movement = BulkMovement::factory()->for($location, 'location')->create();
-
-    $activity = $movement->activities()->first();
-
-    expect($activity->location_id)->toBe($location->id);
 });

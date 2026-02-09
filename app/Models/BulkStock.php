@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\TracksActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class BulkStock extends Model
 {
     /** @use HasFactory<\Database\Factories\BulkStockFactory> */
-    use HasFactory;
-
-    use LogsActivity;
+    use HasFactory, TracksActivity;
 
     protected $fillable = [
         'location_id',
@@ -49,17 +46,5 @@ class BulkStock extends Model
     public function isLowStock(): bool
     {
         return $this->quantity_grams <= $this->low_stock_threshold_grams;
-    }
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty();
-    }
-
-    public function tapActivity($activity, string $eventName): void
-    {
-        $activity->location_id = $this->location_id;
     }
 }
