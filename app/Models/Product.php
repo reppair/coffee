@@ -8,11 +8,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, TracksActivity;
+    use HasFactory, SoftDeletes, TracksActivity;
+
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product) {
+            $product->slug ??= Str::slug($product->name);
+        });
+
+        static::updating(function (Product $product) {
+            if ($product->isDirty('name')) {
+                $product->slug = Str::slug($product->name);
+            }
+        });
+    }
 
     protected $fillable = [
         'category_id',

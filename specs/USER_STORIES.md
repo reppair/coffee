@@ -62,7 +62,7 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 - Table: name, active status
 - Table actions: view, edit, delete
-- Form: name, description, active toggle
+- Form: active toggle, name, description (in a single section)
 - View page actions: activities, edit, delete (disabled with policy tooltip when products exist)
 - Activity tab: shows change history (restore disabled)
 
@@ -74,11 +74,12 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 **Resource: ProductResource (Global — admin only)**
 
-- Table: image, name, category, type (coffee/tea), active
-- Table actions: view, edit, delete
-- Table filters: by category, by type, active only
-- Form: name, description, category, type, SKU, image, active toggle
-- View page actions: activities, edit, delete (disabled with policy tooltip when stock exists)
+- Table: name, category, type (coffee/tea), active
+- Table actions: view, edit, delete, restore (trashed only)
+- Table filters: trashed, by category, by type, active only
+- Form: two-column layout — left section: active toggle, name, description, category, type, SKU; right: image upload
+- View page actions: activities, edit, delete (soft delete) | force delete + restore (trashed only) — delete/force delete disabled with policy tooltip when active inventory qty > 0
+- Edit page: no header actions
 - Activity tab: shows change history (restore disabled)
 
 ---
@@ -90,9 +91,11 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: PackageSizeResource (Global — admin only)**
 
 - Table: name, weight (grams), sort order, active status
-- Table actions: view, edit, delete
-- Form: name, weight_grams, sort_order, is_active toggle
-- View page actions: activities, edit, delete (disabled with policy tooltip when used by stock)
+- Table actions: view, edit, delete, restore (trashed only)
+- Table filters: trashed
+- Form: active toggle, name, weight_grams, sort_order (in a single section)
+- View page actions: activities, edit, delete (soft delete) | force delete + restore (trashed only) — delete/force delete disabled with policy tooltip when active package stock qty > 0
+- Edit page: no header actions
 - Activity tab: shows change history (restore disabled)
 
 ---
@@ -104,9 +107,11 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: LocationResource (Global — admin only)**
 
 - Table: name, address, active status
-- Table actions: view, edit, delete
-- Form: name, address, phone, active toggle
-- View page actions: activities, edit, delete (disabled with policy tooltip when stock exists)
+- Table actions: view, edit, delete, restore (trashed only)
+- Table filters: trashed
+- Form: active toggle, name, address, phone (in a single section)
+- View page actions: activities, edit, delete (soft delete) | force delete + restore (trashed only) — delete/force delete disabled with policy tooltip when tenant records exist
+- Edit page: no header actions
 - Activity tab: shows change history (restore disabled)
 
 ---
@@ -119,8 +124,9 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 - Table: name, email, role badge (Admin/Staff/Customer), assigned locations
 - Table actions: view, edit
-- Form: name, email, password, is_admin (toggle), is_staff (toggle), location assignments
+- Form: name, email, password, is_admin toggle, is_staff toggle, location assignments (in a single section)
 - View page actions: activities, edit
+- Edit page: no header actions
 - Activity tab: shows change history (restore disabled)
 
 **Role Logic:**

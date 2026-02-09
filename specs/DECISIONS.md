@@ -11,3 +11,4 @@
 | 007 | 2026-02-09 | No product count column on CategoryResource table | Unnecessary — delete guard works regardless; simplifies the table |
 | 008 | 2026-02-09 | Disable restore action on activity log pages | Prevents accidental data rollback; activities are for audit purposes only |
 | 009 | 2026-02-09 | Delete guard pattern: policy `Response::deny()` with `authorizationTooltip()` | Server-side enforcement via policy; Filament disables button and shows deny message as tooltip. Applied to all global resources with delete guards |
+| 010 | 2026-02-09 | Product soft deletes & nullable stock `product_id` | Soft deletes preserve FK relationships and audit trail. Nullable `product_id` with `nullOnDelete()` preserves historical stock records when force-deleted. Delete guard checks active inventory (qty > 0), not record existence |

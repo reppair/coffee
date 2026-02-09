@@ -79,6 +79,7 @@ Coffee and tea items.
 | sku | string | Nullable, unique if set |
 | image | string | Nullable, file path |
 | is_active | boolean | Default: true |
+| deleted_at | timestamp | Nullable, soft deletes |
 | created_at | timestamp | |
 | updated_at | timestamp | |
 
@@ -164,7 +165,7 @@ Raw inventory at each location.
 |--------|------|-------|
 | id | bigint | Primary key |
 | location_id | bigint | Foreign key |
-| product_id | bigint | Foreign key |
+| product_id | bigint | Nullable FK, null on product force-delete |
 | quantity_grams | integer | Current stock in grams |
 | low_stock_threshold_grams | integer | Alert threshold, default: 5000 (5kg) |
 | default_sale_price_per_kg | decimal(10,2) | Nullable, for quick bulk sales |
@@ -218,7 +219,7 @@ Packaged inventory at each location.
 |--------|------|-------|
 | id | bigint | Primary key |
 | location_id | bigint | Foreign key (tenant) |
-| product_id | bigint | Foreign key |
+| product_id | bigint | Nullable FK, null on product force-delete |
 | package_size_id | bigint | Foreign key |
 | quantity | integer | Current stock in units |
 | price | decimal(10,2) | Retail price per unit |

@@ -42,13 +42,13 @@ CRUD for shared lookup tables. Admin-only access, no tenant scoping.
 
 **Stories:** US-10, US-11, US-12, US-13, US-14
 
-- [x] **2.1** `CategoryResource` — table (name, active), view page, form (name, description, active), policy delete guard with `authorizationTooltip()`, activity page
-- [ ] **2.2** `ProductResource` — table (image, name, category, type, active), view page, form (name, description, category, type, sku, image, active), filters (category, type, active), policy delete guard with `authorizationTooltip()`, activity page
-- [ ] **2.3** `PackageSizeResource` — table (name, weight, sort order, active), view page, form fields, policy delete guard with `authorizationTooltip()`, activity page
-- [ ] **2.4** `LocationResource` — table (name, address, active), view page, form fields, policy delete guard with `authorizationTooltip()`, activity page
-- [ ] **2.5** `UserResource` — table (name, email, role badge, assigned locations), view page, form (name, email, password, is_admin, is_staff, location assignments), activity page (no delete)
-- [ ] **2.6** Policies for all 5 global resources — `viewAny` requires `is_admin`
-- [ ] **2.7** Tests: CRUD operations, delete guards, access control (staff cannot access)
+- [x] **2.1** `CategoryResource` — table (name, active), view page, form (active toggle, name, description in a section), policy delete guard with `authorizationTooltip()`, activity page
+- [x] **2.2** `ProductResource` — table (name, category, type, active), view page, form (two-column: fields left, image right), filters (trashed, category, type, active), soft deletes with trashed filter, restore on table + view page, force delete on view page (trashed only), policy delete/forceDelete guards with `authorizationTooltip()`, no edit page actions, activity page
+- [ ] **2.3** `PackageSizeResource` — table (name, weight, sort order, active), view page, form (active toggle, name, weight_grams, sort_order in a section), soft deletes with trashed filter, table actions (view, edit, delete, restore), view page (activities, edit, delete / force delete + restore on trashed) with `authorizationTooltip()`, no edit page actions, policy delete/forceDelete guard (deny when package stock qty > 0), nullable `package_size_id` FK with `nullOnDelete()`, activity page
+- [ ] **2.4** `LocationResource` — table (name, address, active), view page, form (active toggle, name, address, phone in a section), soft deletes with trashed filter, table actions (view, edit, delete, restore), view page (activities, edit, delete / force delete + restore on trashed) with `authorizationTooltip()`, no edit page actions, policy delete/forceDelete guard (deny when tenant records exist), activity page
+- [ ] **2.5** `UserResource` — table (name, email, role badge, assigned locations), view page, form (name, email, password, is_admin toggle, is_staff toggle, location assignments in a section), no delete actions (deactivate via is_active toggle), no edit page actions, activity page
+- [ ] **2.6** Policies for all 5 global resources — `viewAny` requires `is_admin`, delete/forceDelete/restore for soft-deletable resources (products, package sizes, locations), qty-based delete guards with `Response::deny()` and `authorizationTooltip()`
+- [ ] **2.7** Tests: CRUD operations, soft delete/restore/force delete, qty-based delete guards, view page action visibility (conditional on trashed state), no edit page actions, access control (staff cannot access)
 
 ---
 

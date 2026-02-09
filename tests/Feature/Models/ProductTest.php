@@ -42,12 +42,53 @@ it('can update a product', function () {
     expect($product->fresh()->name)->toBe('Updated Name');
 });
 
-it('can delete a product', function () {
+it('soft deletes a product', function () {
     $product = Product::factory()->create();
 
     $product->delete();
 
-    expect(Product::find($product->id))->toBeNull();
+    expect(Product::find($product->id))->toBeNull()
+        ->and(Product::withTrashed()->find($product->id))->not->toBeNull()
+        ->trashed()->toBeTrue();
+});
+
+it('restores a soft-deleted product', function () {
+    $product = Product::factory()->create();
+    $product->delete();
+
+    $product->restore();
+
+    expect(Product::find($product->id))->not->toBeNull()
+        ->trashed()->toBeFalse();
+});
+
+it('force deletes a product', function () {
+    $product = Product::factory()->create();
+
+    $product->forceDelete();
+
+    expect(Product::withTrashed()->find($product->id))->toBeNull();
+});
+
+it('force delete preserves stock records with null product_id', function () {
+    $product = Product::factory()->create();
+    $bulkStock = BulkStock::factory()->for($product)->create();
+    $packageStock = PackageStock::factory()->for($product)->create();
+
+    $product->forceDelete();
+
+    expect($bulkStock->fresh()->product_id)->toBeNull()
+        ->and($packageStock->fresh()->product_id)->toBeNull();
+});
+
+it('excludes soft-deleted products from default queries', function () {
+    $active = Product::factory()->create();
+    $deleted = Product::factory()->create();
+    $deleted->delete();
+
+    expect(Product::all())->toHaveCount(1)
+        ->first()->id->toBe($active->id)
+        ->and(Product::withTrashed()->count())->toBe(2);
 });
 
 it('can retrieve a product', function () {
@@ -133,4 +174,23 @@ it('can have nullable description', function () {
     $product->update(['description' => 'Now with description']);
 
     expect($product->fresh()->description)->toBe('Now with description');
+});
+
+it('auto-generates slug from name on create', function () {
+    $product = Product::factory()->create([
+        'name' => 'Ethiopian Yirgacheffe',
+        'slug' => null,
+    ]);
+
+    expect($product->slug)->toBe('ethiopian-yirgacheffe');
+});
+
+it('regenerates slug on name update', function () {
+    $product = Product::factory()->create(['name' => 'Original Name']);
+
+    expect($product->slug)->toBe('original-name');
+
+    $product->update(['name' => 'Updated Name']);
+
+    expect($product->fresh()->slug)->toBe('updated-name');
 });

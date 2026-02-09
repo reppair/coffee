@@ -17,7 +17,8 @@ return new class extends Migration
         Schema::create('package_stocks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Location::class)->constrained()->restrictOnDelete();
-            $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
+            /** Nullable to preserve historical stock records when a product is force-deleted */
+            $table->foreignIdFor(Product::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(PackageSize::class)->constrained()->cascadeOnDelete();
             $table->integer('quantity')->default(0);
             $table->decimal('price', 10, 2);

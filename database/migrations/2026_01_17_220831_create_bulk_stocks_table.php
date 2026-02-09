@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('bulk_stocks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Location::class)->constrained()->restrictOnDelete();
-            $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
+            /** Nullable to preserve historical stock records when a product is force-deleted */
+            $table->foreignIdFor(Product::class)->nullable()->constrained()->nullOnDelete();
             $table->integer('quantity_grams')->default(0);
             $table->integer('low_stock_threshold_grams')->default(5000);
             $table->decimal('default_sale_price_per_kg', 10, 2)->nullable();
