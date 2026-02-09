@@ -73,7 +73,7 @@ Stories organized by feature area. Each story describes what the user wants to d
 **Resource: ProductResource (Global — admin only)**
 
 - Table: image, name, category, type (coffee/tea), active
-- Form: name, category, type, SKU, image
+- Form: name, description, category, type, SKU, image
 - Filters: by category, by type, active only
 - Actions: edit, toggle active, delete (only if no stock)
 - Activity tab: shows change history

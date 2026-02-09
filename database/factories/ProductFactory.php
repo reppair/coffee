@@ -19,6 +19,7 @@ class ProductFactory extends Factory
         return [
             'category_id' => Category::factory(),
             'name' => $name,
+            'description' => fake()->optional()->paragraph(),
             'slug' => Str::slug($name),
             'type' => fake()->randomElement(ProductType::cases()),
             'sku' => fake()->optional()->regexify('[A-Z]{3}[0-9]{4}'),

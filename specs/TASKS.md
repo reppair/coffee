@@ -43,7 +43,7 @@ CRUD for shared lookup tables. Admin-only access, no tenant scoping.
 **Stories:** US-10, US-11, US-12, US-13, US-14
 
 - [ ] **2.1** `CategoryResource` — table (name, product count, active), form (name, description, active), delete guard (only if no products), activity tab
-- [ ] **2.2** `ProductResource` — table (image, name, category, type, active), form (name, category, type, sku, image, active), filters (category, type, active), delete guard (only if no stock), activity tab
+- [ ] **2.2** `ProductResource` — table (image, name, category, type, active), form (name, description, category, type, sku, image, active), filters (category, type, active), delete guard (only if no stock), activity tab
 - [ ] **2.3** `PackageSizeResource` — table (name, weight, sort order, active), form fields, delete guard (only if unused), activity tab
 - [ ] **2.4** `LocationResource` — table (name, address, active), form fields, delete guard (only if no stock), activity tab
 - [ ] **2.5** `UserResource` — table (name, email, role badge, assigned locations), form (name, email, password, is_admin, is_staff, location assignments), activity tab

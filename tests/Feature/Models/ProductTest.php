@@ -14,6 +14,7 @@ it('can create a product', function () {
     $product = Product::create([
         'category_id' => $category->id,
         'name' => 'Test Product',
+        'description' => 'A delicious test product',
         'slug' => 'test-product',
         'type' => ProductType::Coffee,
         'sku' => 'TEST123',
@@ -22,11 +23,13 @@ it('can create a product', function () {
 
     expect($product)->toBeInstanceOf(Product::class)
         ->name->toBe('Test Product')
+        ->description->toBe('A delicious test product')
         ->type->toBe(ProductType::Coffee)
         ->is_active->toBeTrue();
 
     assertDatabaseHas('products', [
         'name' => 'Test Product',
+        'description' => 'A delicious test product',
         'sku' => 'TEST123',
     ]);
 });
@@ -120,4 +123,14 @@ it('logs activity when created', function () {
     $product = Product::factory()->create();
 
     expect($product->activities()->count())->toBeGreaterThan(0);
+});
+
+it('can have nullable description', function () {
+    $product = Product::factory()->create(['description' => null]);
+
+    expect($product->description)->toBeNull();
+
+    $product->update(['description' => 'Now with description']);
+
+    expect($product->fresh()->description)->toBe('Now with description');
 });

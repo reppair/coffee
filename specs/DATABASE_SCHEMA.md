@@ -73,6 +73,7 @@ Coffee and tea items.
 | id | bigint | Primary key |
 | category_id | bigint | Foreign key, nullable |
 | name | string | Required |
+| description | text | Nullable |
 | slug | string | Unique, URL-friendly |
 | type | enum | 'coffee', 'tea' |
 | sku | string | Nullable, unique if set |
