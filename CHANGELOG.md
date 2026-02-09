@@ -5,6 +5,7 @@ All notable changes to the Coffee & Tea Inventory System.
 ## [Unreleased]
 
 ### Added
+- Install Laravel Nightwatch error tracking and publish the config file.
 - `app:create-admin` artisan command to quickly create admin users with a random password
 - Product management resource for admins — create, edit, and delete products with full CRUD, image upload, activity log
 - Category management resource for admins — create, edit, and delete product categories
