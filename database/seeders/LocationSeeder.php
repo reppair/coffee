@@ -11,14 +11,14 @@ class LocationSeeder extends Seeder
     {
         $locations = [
             [
-                'name' => 'Coffee Central',
-                'address' => '123 Main Street, Downtown',
+                'name' => 'Cush Coffee',
+                'address' => 'Kazbek, Manastirski Livadi',
                 'phone' => '+1 (555) 123-4567',
                 'is_active' => true,
             ],
             [
-                'name' => 'Airport Kiosk',
-                'address' => 'Terminal 2, International Airport',
+                'name' => 'Cush Central',
+                'address' => 'Tzar Simeon',
                 'phone' => '+1 (555) 987-6543',
                 'is_active' => false,
             ],

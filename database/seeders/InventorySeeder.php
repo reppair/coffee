@@ -18,8 +18,8 @@ class InventorySeeder extends Seeder
 {
     public function run(): void
     {
-        $coffeeCentral = Location::where('name', 'Coffee Central')->first();
-        $airportKiosk = Location::where('name', 'Airport Kiosk')->first();
+        $cushCoffee = Location::where('name', 'Cush Coffee')->first();
+        $cushCentral = Location::where('name', 'Cush Central')->first();
 
         $dimo = User::where('email', 'dimo@example.com')->first();
         $geri = User::where('email', 'geri@example.com')->first();
@@ -29,7 +29,7 @@ class InventorySeeder extends Seeder
 
         foreach ($products as $product) {
             $bulkStock = BulkStock::create([
-                'location_id' => $coffeeCentral->id,
+                'location_id' => $cushCoffee->id,
                 'product_id' => $product->id,
                 'quantity_grams' => 0,
                 'low_stock_threshold_grams' => 5000,
@@ -37,7 +37,7 @@ class InventorySeeder extends Seeder
             ]);
 
             BulkMovement::create([
-                'location_id' => $coffeeCentral->id,
+                'location_id' => $cushCoffee->id,
                 'bulk_stock_id' => $bulkStock->id,
                 'user_id' => $dimo->id,
                 'type' => BulkMovementType::Initial,
@@ -51,7 +51,7 @@ class InventorySeeder extends Seeder
             $bulkStock->update(['quantity_grams' => 20000]);
 
             BulkMovement::create([
-                'location_id' => $coffeeCentral->id,
+                'location_id' => $cushCoffee->id,
                 'bulk_stock_id' => $bulkStock->id,
                 'user_id' => $geri->id,
                 'type' => BulkMovementType::Packaging,
@@ -64,7 +64,7 @@ class InventorySeeder extends Seeder
 
             foreach ($packageSizes as $index => $size) {
                 $packageStock = PackageStock::create([
-                    'location_id' => $coffeeCentral->id,
+                    'location_id' => $cushCoffee->id,
                     'product_id' => $product->id,
                     'package_size_id' => $size->id,
                     'quantity' => 0,
@@ -75,7 +75,7 @@ class InventorySeeder extends Seeder
                 $packagedQuantity = rand(20, 50);
 
                 PackageMovement::create([
-                    'location_id' => $coffeeCentral->id,
+                    'location_id' => $cushCoffee->id,
                     'package_stock_id' => $packageStock->id,
                     'user_id' => $geri->id,
                     'type' => PackageMovementType::Packaged,
@@ -88,7 +88,7 @@ class InventorySeeder extends Seeder
 
                 if ($index === 0) {
                     PackageMovement::create([
-                        'location_id' => $coffeeCentral->id,
+                        'location_id' => $cushCoffee->id,
                         'package_stock_id' => $packageStock->id,
                         'user_id' => $geri->id,
                         'type' => PackageMovementType::Sale,
@@ -104,8 +104,8 @@ class InventorySeeder extends Seeder
         }
 
         $firstProduct = $products->first();
-        $airportBulkStock = BulkStock::create([
-            'location_id' => $airportKiosk->id,
+        $centralBulkStock = BulkStock::create([
+            'location_id' => $cushCentral->id,
             'product_id' => $firstProduct->id,
             'quantity_grams' => 0,
             'low_stock_threshold_grams' => 5000,
@@ -113,8 +113,8 @@ class InventorySeeder extends Seeder
         ]);
 
         BulkMovement::create([
-            'location_id' => $airportKiosk->id,
-            'bulk_stock_id' => $airportBulkStock->id,
+            'location_id' => $cushCentral->id,
+            'bulk_stock_id' => $centralBulkStock->id,
             'user_id' => $dimo->id,
             'type' => BulkMovementType::TransferIn,
             'quantity_grams_change' => 5000,
@@ -122,6 +122,6 @@ class InventorySeeder extends Seeder
             'quantity_grams_after' => 5000,
         ]);
 
-        $airportBulkStock->update(['quantity_grams' => 5000]);
+        $centralBulkStock->update(['quantity_grams' => 5000]);
     }
 }

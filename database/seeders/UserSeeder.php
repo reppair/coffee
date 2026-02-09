@@ -10,8 +10,18 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $coffeeCentral = Location::where('name', 'Coffee Central')->first();
-        $airportKiosk = Location::where('name', 'Airport Kiosk')->first();
+        $cushCoffee = Location::where('name', 'Cush Coffee')->first();
+        $cushCentral = Location::where('name', 'Cush Central')->first();
+
+        $martin = User::create([
+            'name' => 'Martin',
+            'email' => 'martin@blagoev.xyz',
+            'password' => bcrypt('password'),
+            'is_admin' => true,
+            'is_staff' => false,
+            'is_active' => true,
+        ]);
+        $martin->locations()->attach([$cushCoffee->id, $cushCentral->id]);
 
         $dimo = User::create([
             'name' => 'Dimo',
@@ -21,7 +31,7 @@ class UserSeeder extends Seeder
             'is_staff' => false,
             'is_active' => true,
         ]);
-        $dimo->locations()->attach([$coffeeCentral->id, $airportKiosk->id]);
+        $dimo->locations()->attach([$cushCoffee->id, $cushCentral->id]);
 
         $geri = User::create([
             'name' => 'Geri',
@@ -31,7 +41,7 @@ class UserSeeder extends Seeder
             'is_staff' => true,
             'is_active' => true,
         ]);
-        $geri->locations()->attach($coffeeCentral->id);
+        $geri->locations()->attach($cushCoffee->id);
 
         $pesho = User::create([
             'name' => 'Pesho',
@@ -41,8 +51,8 @@ class UserSeeder extends Seeder
             'is_staff' => true,
             'is_active' => true,
         ]);
-        $pesho->locations()->attach($coffeeCentral->id);
+        $pesho->locations()->attach($cushCoffee->id);
 
-        User::factory()->customer()->count(3)->create();
+        User::factory()->count(3)->create();
     }
 }
