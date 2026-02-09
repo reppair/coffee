@@ -13,6 +13,7 @@ class Category extends Model
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory, TracksActivity;
 
+    /** @var list<string> */
     protected $fillable = [
         'name',
         'slug',
@@ -33,6 +34,7 @@ class Category extends Model
         });
     }
 
+    /** @return array<string, string> */
     protected function casts(): array
     {
         return [

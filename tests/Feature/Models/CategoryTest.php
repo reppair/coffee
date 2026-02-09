@@ -45,18 +45,20 @@ it('can retrieve a category', function () {
 
     $found = Category::where('name', 'Find Me')->first();
 
-    expect($found)->not->toBeNull()
-        ->and($found->id)->toBe($category->id);
+    expect($found)
+        ->not->toBeNull()
+        ->id->toBe($category->id);
 });
 
 it('has products relationship', function () {
     $category = Category::factory()->create();
     $products = Product::factory()->count(3)->for($category)->create();
 
-    expect($category->products)->toHaveCount(3)
-        ->each->toBeInstanceOf(Product::class);
-
-    expect($category->products->pluck('id')->toArray())->toEqual($products->pluck('id')->toArray());
+    expect($category->products)
+        ->toHaveCount(3)
+        ->each->toBeInstanceOf(Product::class)
+        ->and($category->products->pluck('id')->toArray())
+        ->toEqual($products->pluck('id')->toArray());
 });
 
 it('casts is_active to boolean', function () {

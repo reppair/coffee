@@ -200,26 +200,14 @@ it('does not allow restoring activities', function () {
     expect($component->instance()->canRestoreActivity())->toBeFalse();
 });
 
-it('has edit action in table', function () {
-    $category = Category::factory()->create();
-
+it('has expected table actions', function (string $action) {
     livewire(ListCategories::class)
-        ->assertTableActionExists(EditAction::class);
-});
-
-it('has view action in table', function () {
-    $category = Category::factory()->create();
-
-    livewire(ListCategories::class)
-        ->assertTableActionExists(ViewAction::class);
-});
-
-it('has delete action in table', function () {
-    $category = Category::factory()->create();
-
-    livewire(ListCategories::class)
-        ->assertTableActionExists(DeleteAction::class);
-});
+        ->assertTableActionExists($action);
+})->with([
+    'view' => ViewAction::class,
+    'edit' => EditAction::class,
+    'delete' => DeleteAction::class,
+]);
 
 it('can access edit page from table edit action', function () {
     $category = Category::factory()->create();
@@ -228,23 +216,13 @@ it('can access edit page from table edit action', function () {
         ->callTableAction(EditAction::class, $category);
 });
 
-it('has activities action in view page header', function () {
+it('has expected view page header actions', function (string $action) {
     $category = Category::factory()->create();
 
     livewire(ViewCategory::class, ['record' => $category->id])
-        ->assertActionExists('activities');
-});
-
-it('has edit action in view page header', function () {
-    $category = Category::factory()->create();
-
-    livewire(ViewCategory::class, ['record' => $category->id])
-        ->assertActionExists(EditAction::class);
-});
-
-it('has delete action in view page header', function () {
-    $category = Category::factory()->create();
-
-    livewire(ViewCategory::class, ['record' => $category->id])
-        ->assertActionExists(DeleteAction::class);
-});
+        ->assertActionExists($action);
+})->with([
+    'activities' => 'activities',
+    'edit' => EditAction::class,
+    'delete' => DeleteAction::class,
+]);
