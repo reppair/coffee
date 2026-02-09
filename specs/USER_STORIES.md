@@ -64,6 +64,7 @@ Stories organized by feature area. Each story describes what the user wants to d
 - Table actions: view, edit, delete
 - Form: active toggle, name, description (in a single section)
 - View page actions: activities, edit, delete (disabled with policy tooltip when products exist)
+- View page: Products relation manager showing category's products with drag-and-drop reordering (sortable by `category_sort_order`), columns (name, type, active), view action only
 - Activity tab: shows change history (restore disabled)
 
 ---
@@ -74,13 +75,14 @@ Stories organized by feature area. Each story describes what the user wants to d
 
 **Resource: ProductResource (Global — admin only)**
 
-- Table: name, category, type (coffee/tea), active
+- Table: name, category (links to category view page), type (coffee/tea), active
 - Table actions: view, edit, delete, restore (trashed only)
 - Table filters: trashed, by category, by type, active only
 - Form: two-column layout — left section: active toggle, name, description, category, type, SKU; right: image upload
 - View page actions: activities, edit, delete (soft delete) | force delete + restore (trashed only) — delete/force delete disabled with policy tooltip when active inventory qty > 0
 - Edit page: no header actions
 - Activity tab: shows change history (restore disabled)
+- Sortable per category via `category_sort_order` column for drag-and-drop reordering in category's relation manager
 
 ---
 

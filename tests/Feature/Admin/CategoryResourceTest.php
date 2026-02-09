@@ -226,3 +226,130 @@ it('has expected view page header actions', function (string $action) {
     'edit' => EditAction::class,
     'delete' => DeleteAction::class,
 ]);
+
+it('renders products relation manager on view page', function () {
+    $category = Category::factory()->create();
+    Product::factory()->count(3)->for($category)->create();
+
+    livewire(ViewCategory::class, ['record' => $category->id])
+        ->assertSeeLivewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class);
+});
+
+it('shows category products in relation manager', function () {
+    $category = Category::factory()->create();
+    $products = Product::factory()->count(3)->for($category)->create();
+
+    livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ])
+        ->assertCanSeeTableRecords($products);
+});
+
+it('does not show other category products in relation manager', function () {
+    $category = Category::factory()->create();
+    $otherCategory = Category::factory()->create();
+
+    $ownProducts = Product::factory()->count(2)->for($category)->create();
+    $otherProducts = Product::factory()->count(2)->for($otherCategory)->create();
+
+    livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ])
+        ->assertCanSeeTableRecords($ownProducts)
+        ->assertCanNotSeeTableRecords($otherProducts);
+});
+
+it('does not show relation manager on edit page', function () {
+    $category = Category::factory()->create();
+
+    livewire(EditCategory::class, ['record' => $category->id])
+        ->assertDontSeeLivewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class);
+});
+
+it('has view action on relation manager rows', function () {
+    $category = Category::factory()->create();
+
+    livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ])
+        ->assertTableActionExists(ViewAction::class);
+});
+
+it('view action in relation manager links to product view page', function () {
+    $category = Category::factory()->create();
+    $product = Product::factory()->for($category)->create();
+
+    $component = livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ]);
+
+    $table = $component->instance()->getTable();
+    $viewAction = collect($table->getRecordActions())->first(fn ($action) => $action instanceof ViewAction);
+
+    expect($viewAction)->not->toBeNull();
+
+    $url = $viewAction->getUrl($product);
+    $expectedUrl = \App\Filament\Resources\Products\ProductResource::getUrl('view', ['record' => $product->id]);
+
+    expect($url)->toBe($expectedUrl);
+});
+
+it('products in relation manager are sorted by category_sort_order', function () {
+    $category = Category::factory()->create();
+
+    $product1 = Product::factory()->for($category)->create(['name' => 'First']);
+    $product2 = Product::factory()->for($category)->create(['name' => 'Second']);
+    $product3 = Product::factory()->for($category)->create(['name' => 'Third']);
+
+    expect($product1->fresh()->category_sort_order)->toBe(1)
+        ->and($product2->fresh()->category_sort_order)->toBe(2)
+        ->and($product3->fresh()->category_sort_order)->toBe(3);
+
+    livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ])
+        ->assertCanSeeTableRecords([$product1, $product2, $product3], inOrder: true);
+});
+
+it('relation manager has reorderable configured', function () {
+    $category = Category::factory()->create();
+
+    $component = livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ]);
+
+    $table = $component->instance()->getTable();
+
+    expect($table->getReorderColumn())->toBe('category_sort_order');
+});
+
+it('relation manager does not have create or associate actions', function () {
+    $category = Category::factory()->create();
+
+    $component = livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ]);
+
+    $table = $component->instance()->getTable();
+    $headerActions = $table->getHeaderActions();
+
+    expect($headerActions)->toBeEmpty();
+});
+
+it('relation manager does not have edit or delete actions', function () {
+    $category = Category::factory()->create();
+
+    livewire(\App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager::class, [
+        'ownerRecord' => $category,
+        'pageClass' => ViewCategory::class,
+    ])
+        ->assertTableActionDoesNotExist(\Filament\Actions\EditAction::class)
+        ->assertTableActionDoesNotExist(\Filament\Actions\DeleteAction::class);
+});

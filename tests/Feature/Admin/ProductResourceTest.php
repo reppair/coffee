@@ -373,3 +373,46 @@ it('can filter products by active status', function () {
         ->assertCanSeeTableRecords([$active])
         ->assertCanNotSeeTableRecords([$inactive]);
 });
+
+it('category column has url configured', function () {
+    $category = Category::factory()->create();
+    $product = Product::factory()->for($category)->create();
+
+    $component = livewire(ListProducts::class);
+
+    $table = $component->instance()->getTable();
+    $categoryColumn = collect($table->getColumns())->first(fn ($col) => $col->getName() === 'category.name');
+
+    expect($categoryColumn)->not->toBeNull();
+
+    $reflection = new \ReflectionClass($categoryColumn);
+    $urlProperty = $reflection->getProperty('url');
+    $urlProperty->setAccessible(true);
+    $urlClosure = $urlProperty->getValue($categoryColumn);
+
+    expect($urlClosure)->not->toBeNull()
+        ->and($urlClosure)->toBeInstanceOf(\Closure::class);
+
+    $generatedUrl = $urlClosure($product);
+    $expectedUrl = \App\Filament\Resources\Categories\CategoryResource::getUrl('view', ['record' => $category->id]);
+
+    expect($generatedUrl)->toBe($expectedUrl);
+});
+
+it('category column returns null url when product has no category', function () {
+    $product = Product::factory()->create(['category_id' => null]);
+
+    $component = livewire(ListProducts::class);
+
+    $table = $component->instance()->getTable();
+    $categoryColumn = collect($table->getColumns())->first(fn ($col) => $col->getName() === 'category.name');
+
+    $reflection = new \ReflectionClass($categoryColumn);
+    $urlProperty = $reflection->getProperty('url');
+    $urlProperty->setAccessible(true);
+    $urlClosure = $urlProperty->getValue($categoryColumn);
+
+    $generatedUrl = $urlClosure($product);
+
+    expect($generatedUrl)->toBeNull();
+});

@@ -7,6 +7,8 @@ All notable changes to the Coffee & Tea Inventory System.
 ### Added
 - Product management resource for admins — create, edit, and delete products with full CRUD, image upload, activity log
 - Category management resource for admins — create, edit, and delete product categories
+- Products relation manager on category view page showing all products in category with drag-and-drop reordering
+- Category column in products table now links directly to category view page
 - Admin panel multi-tenancy with Location as tenant — users switch between locations
 - Panel access control — only admin and staff users can access the admin panel
 - Tenant scoping — admins see all locations, staff see only their assigned locations
@@ -20,6 +22,7 @@ All notable changes to the Coffee & Tea Inventory System.
 - Implementation task breakdown covering 28 user stories across 8 delivery milestones
 
 ### Changed
+- Products now sortable per category via `category_sort_order` column using `spatie/eloquent-sortable`
 - Product deletion uses soft deletes to preserve historical data and audit trails
 - Product list includes trashed filter, restore action on table rows and view page, force delete on view page for soft-deleted products
 - Product form restructured to two-column layout — fields in a left section, image upload on the right

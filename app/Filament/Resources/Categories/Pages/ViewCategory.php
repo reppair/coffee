@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Pages;
 
 use App\Filament\Resources\Categories\CategoryResource;
+use App\Filament\Resources\Categories\RelationManagers\ProductsRelationManager;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -23,6 +24,13 @@ class ViewCategory extends ViewRecord
             EditAction::make(),
             DeleteAction::make()
                 ->authorizationTooltip(),
+        ];
+    }
+
+    public function getAllRelationManagers(): array
+    {
+        return [
+            ProductsRelationManager::class,
         ];
     }
 }

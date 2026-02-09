@@ -194,3 +194,75 @@ it('regenerates slug on name update', function () {
 
     expect($product->fresh()->slug)->toBe('updated-name');
 });
+
+it('auto-assigns category_sort_order when created', function () {
+    $category = Category::factory()->create();
+
+    $product1 = Product::factory()->for($category)->create();
+    $product2 = Product::factory()->for($category)->create();
+    $product3 = Product::factory()->for($category)->create();
+
+    expect($product1->fresh()->category_sort_order)->toBe(1)
+        ->and($product2->fresh()->category_sort_order)->toBe(2)
+        ->and($product3->fresh()->category_sort_order)->toBe(3);
+});
+
+it('scopes category_sort_order per category', function () {
+    $category1 = Category::factory()->create();
+    $category2 = Category::factory()->create();
+
+    $product1a = Product::factory()->for($category1)->create();
+    $product1b = Product::factory()->for($category1)->create();
+    $product2a = Product::factory()->for($category2)->create();
+    $product2b = Product::factory()->for($category2)->create();
+
+    expect($product1a->fresh()->category_sort_order)->toBe(1)
+        ->and($product1b->fresh()->category_sort_order)->toBe(2)
+        ->and($product2a->fresh()->category_sort_order)->toBe(1)
+        ->and($product2b->fresh()->category_sort_order)->toBe(2);
+});
+
+it('reorders within same category', function () {
+    $category = Category::factory()->create();
+
+    $product1 = Product::factory()->for($category)->create();
+    $product2 = Product::factory()->for($category)->create();
+    $product3 = Product::factory()->for($category)->create();
+
+    expect($product1->fresh()->category_sort_order)->toBe(1)
+        ->and($product2->fresh()->category_sort_order)->toBe(2)
+        ->and($product3->fresh()->category_sort_order)->toBe(3);
+
+    $product1->moveOrderDown();
+
+    expect($product1->fresh()->category_sort_order)->toBe(2)
+        ->and($product2->fresh()->category_sort_order)->toBe(1)
+        ->and($product3->fresh()->category_sort_order)->toBe(3);
+});
+
+it('handles products without category', function () {
+    $product = Product::factory()->create(['category_id' => null]);
+
+    expect($product->category_id)->toBeNull()
+        ->and($product->category_sort_order)->toBeGreaterThanOrEqual(0);
+});
+
+it('reassigns sort order when moving product to different category', function () {
+    $category1 = Category::factory()->create();
+    $category2 = Category::factory()->create();
+
+    $product1a = Product::factory()->for($category1)->create();
+    $product1b = Product::factory()->for($category1)->create();
+
+    $product2a = Product::factory()->for($category2)->create();
+
+    expect($product1a->fresh()->category_sort_order)->toBe(1)
+        ->and($product1b->fresh()->category_sort_order)->toBe(2)
+        ->and($product2a->fresh()->category_sort_order)->toBe(1);
+
+    $product1b->update(['category_id' => $category2->id]);
+    $product1b->setHighestOrderNumber();
+
+    expect($product1b->fresh()->category_sort_order)->toBe(2)
+        ->and($product1b->fresh()->category_id)->toBe($category2->id);
+});

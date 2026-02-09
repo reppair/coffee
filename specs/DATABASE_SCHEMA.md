@@ -79,6 +79,7 @@ Coffee and tea items.
 | sku | string | Nullable, unique if set |
 | image | string | Nullable, file path |
 | is_active | boolean | Default: true |
+| category_sort_order | integer | Default: 0, for per-category ordering |
 | deleted_at | timestamp | Nullable, soft deletes |
 | created_at | timestamp | |
 | updated_at | timestamp | |
