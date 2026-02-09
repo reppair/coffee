@@ -6,6 +6,7 @@ use Filament\Facades\Filament;
 
 beforeEach(function () {
     $this->locations = Location::factory()->count(3)->create();
+    $this->panel = Filament::getPanel('/admin');
 });
 
 it('allows admin to access the admin panel', function () {
@@ -35,30 +36,26 @@ it('denies customer access to the admin panel', function () {
 
 it('grants panel access to admin', function () {
     $admin = User::factory()->admin()->create();
-    $panel = Filament::getPanel('/admin');
 
-    expect($admin->canAccessPanel($panel))->toBeTrue();
+    expect($admin->canAccessPanel($this->panel))->toBeTrue();
 });
 
 it('grants panel access to staff', function () {
     $staff = User::factory()->staff()->create();
-    $panel = Filament::getPanel('/admin');
 
-    expect($staff->canAccessPanel($panel))->toBeTrue();
+    expect($staff->canAccessPanel($this->panel))->toBeTrue();
 });
 
 it('denies panel access to customer', function () {
     $customer = User::factory()->create();
-    $panel = Filament::getPanel('/admin');
 
-    expect($customer->canAccessPanel($panel))->toBeFalse();
+    expect($customer->canAccessPanel($this->panel))->toBeFalse();
 });
 
 it('returns all locations as tenants for admin', function () {
     $admin = User::factory()->admin()->create();
-    $panel = Filament::getPanel('/admin');
 
-    expect($admin->getTenants($panel))
+    expect($admin->getTenants($this->panel))
         ->toHaveCount(3)
         ->each->toBeInstanceOf(Location::class);
 });
@@ -67,9 +64,7 @@ it('returns only assigned locations as tenants for staff', function () {
     $staff = User::factory()->staff()->create();
     $staff->locations()->attach($this->locations->first());
 
-    $panel = Filament::getPanel('/admin');
-
-    expect($staff->getTenants($panel))
+    expect($staff->getTenants($this->panel))
         ->toHaveCount(1)
         ->first()->id->toBe($this->locations->first()->id);
 });
@@ -78,16 +73,13 @@ it('returns multiple assigned locations as tenants for staff', function () {
     $staff = User::factory()->staff()->create();
     $staff->locations()->attach([$this->locations[0]->id, $this->locations[1]->id]);
 
-    $panel = Filament::getPanel('/admin');
-
-    expect($staff->getTenants($panel))->toHaveCount(2);
+    expect($staff->getTenants($this->panel))->toHaveCount(2);
 });
 
 it('returns empty collection as tenants for staff with no locations', function () {
     $staff = User::factory()->staff()->create();
-    $panel = Filament::getPanel('/admin');
 
-    expect($staff->getTenants($panel))->toBeEmpty();
+    expect($staff->getTenants($this->panel))->toBeEmpty();
 });
 
 it('allows admin to access any location tenant', function () {
